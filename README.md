@@ -1,7 +1,7 @@
-# DevOps-Hackathon-Toronto-Team-1
+# HemoStat
 Canada DevOps Community of Practice Hackathon Toronto - Team 1 
 
-Project Name - TBD
+Project Name - HemoStat
 
 Team Mentor - Kanwarpreet Singh Khurana
 
