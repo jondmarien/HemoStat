@@ -104,7 +104,7 @@ All agents inherit from the shared `HemoStatAgent` base class, which provides Re
    ```bash
    # Install uv if not already installed
    curl -LsSf https://astral.sh/uv/install.sh | sh
-
+   
    # Install dependencies from pyproject.toml
    uv sync
    ```
@@ -155,7 +155,7 @@ HemoStat-test/
 ├── docker-compose.yml               # Docker Compose configuration
 ├── .env.example                     # Environment template
 ├── .env                             # Local environment (gitignored)
-├── pyproject.toml                   # Python project configuration
+├── requirements.txt                 # Python dependencies
 └── README.md                        # This file
 ```
 
@@ -187,6 +187,7 @@ HemoStat-test/
 - Performance profiling
 - Production deployment guide
 
+
 ## Documentation
 
 - **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Detailed system design and data flow (Phase 2)
@@ -200,14 +201,12 @@ MIT License - See LICENSE file for details
 
 ## Team
 
-**Event**: Canada DevOps Community of Practice Hackathon Toronto - Team 1
-
-**Team Mentor**: Kanwarpreet Singh Khurana
-
 **Team Lead**: Jonathan Marien
 
 **Team Members**: Imran Yafith, Adam Shaldam, Seyon Sri, Audrey Man
 
+**Team Mentor**: Kanwarpreet Singh Khurana
+
 ---
 
-*HemoStat is a Phase 1 infrastructure project for a multi-agent container health monitoring system.*
+**Event**: Canada DevOps Community of Practice Hackathon Toronto - Team 1

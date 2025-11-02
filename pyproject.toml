@@ -1,0 +1,109 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hemostat"
+version = "0.1.0"
+description = "Autonomous Container Health Monitoring System - Multi-agent system for Docker container health monitoring and remediation"
+readme = "README_PHASE1.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Team 1", email = "team@hemostat.local" }]
+keywords = [
+    "docker",
+    "monitoring",
+    "health-check",
+    "multi-agent",
+    "redis",
+    "ai",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Distributed Computing",
+]
+
+# Core dependencies for Phase 1
+dependencies = [
+    "redis==5.0.1",              # Redis Python client with pub/sub support
+    "python-dotenv==1.0.0",      # Environment variable loading from .env files
+    "python-json-logger==2.0.7", # Structured JSON logging
+]
+
+[project.optional-dependencies]
+# Phase 2 - Agent Implementations
+agents = [
+    "docker==7.0.0",    # Monitor/Responder agents for container management
+    "langchain==0.1.0", # LLM orchestration for Analyzer agent
+    "openai==1.10.0",   # OpenAI GPT-4 integration
+    "anthropic==0.8.0", # Anthropic Claude integration
+    "requests==2.31.0", # HTTP client for Alert agent (Slack webhooks)
+]
+
+# Phase 3 - Dashboard
+dashboard = [
+    "streamlit==1.29.0", # Web UI framework for live monitoring dashboard
+]
+
+# Phase 4 - Testing & Monitoring
+dev = [
+    "pytest==7.4.0",          # Unit testing framework
+    "pytest-asyncio==0.21.0", # Async test support
+    "pytest-cov==4.1.0",      # Code coverage reporting
+]
+
+# All optional dependencies
+all = [
+    "docker==7.0.0",
+    "langchain==0.1.0",
+    "openai==1.10.0",
+    "anthropic==0.8.0",
+    "requests==2.31.0",
+    "streamlit==1.29.0",
+    "pytest==7.4.0",
+    "pytest-asyncio==0.21.0",
+    "pytest-cov==4.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/jondmarien/HemoStat"
+Documentation = "https://github.com/jondmarien/HemoStat/wiki"
+Repository = "https://github.com/jondmarien/HemoStat.git"
+Issues = "https://github.com/jondmarien/HemoStat/issues"
+
+[tool.uv]
+# UV configuration for fast Python package management
+managed = true
+dev-dependencies = [
+    "pytest==7.4.0",
+    "pytest-asyncio==0.21.0",
+    "pytest-cov==4.1.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["agents"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "--cov=agents --cov-report=html --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["agents"]
+omit = ["*/tests/*", "*/test_*.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

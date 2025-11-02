@@ -1,0 +1,93 @@
+services:
+  # Redis service for pub/sub messaging and shared state
+  redis:
+    image: redis:7-alpine
+    container_name: hemostat-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - hemostat-network
+
+  # Placeholder for Monitor Agent (Phase 2)
+  # monitor:
+  #   build:
+  #     context: .
+  #     dockerfile: agents/hemostat_monitor/Dockerfile
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - hemostat-network
+
+  # Placeholder for Analyzer Agent (Phase 2)
+  # analyzer:
+  #   build:
+  #     context: .
+  #     dockerfile: agents/hemostat_analyzer/Dockerfile
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - hemostat-network
+
+  # Placeholder for Responder Agent (Phase 2)
+  # responder:
+  #   build:
+  #     context: .
+  #     dockerfile: agents/hemostat_responder/Dockerfile
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - hemostat-network
+
+  # Placeholder for Alert Agent (Phase 2)
+  # alert:
+  #   build:
+  #     context: .
+  #     dockerfile: agents/hemostat_alert/Dockerfile
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - hemostat-network
+
+  # Placeholder for Dashboard (Phase 3)
+  # dashboard:
+  #   build:
+  #     context: .
+  #     dockerfile: dashboard/Dockerfile
+  #   ports:
+  #     - "8501:8501"
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - hemostat-network
+
+  # Placeholder for Test Services (Phase 4)
+  # test:
+  #   build:
+  #     context: .
+  #     dockerfile: tests/Dockerfile
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - hemostat-network
+
+networks:
+  hemostat-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
