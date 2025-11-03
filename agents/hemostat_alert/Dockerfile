@@ -4,7 +4,7 @@ FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
 WORKDIR /build
 
 # Copy project files
-COPY pyproject.toml uv.lock* ./
+COPY README.md pyproject.toml uv.lock* ./
 COPY agents/ ./agents/
 
 # Install dependencies

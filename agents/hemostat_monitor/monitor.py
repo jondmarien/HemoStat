@@ -13,6 +13,7 @@ import docker
 from docker.errors import APIError, DockerException
 
 from agents.agent_base import HemoStatAgent
+from agents.platform_utils import get_docker_host
 
 
 class ContainerMonitor(HemoStatAgent):
@@ -34,13 +35,19 @@ class ContainerMonitor(HemoStatAgent):
         # Initialize base agent
         super().__init__(agent_name="monitor")
 
-        # Initialize Docker client
+        # Initialize Docker client with platform-aware socket detection
         try:
+            docker_host = os.getenv("DOCKER_HOST") or get_docker_host()
             self.docker_client = docker.from_env()
-            self.logger.info("Docker client initialized successfully")
+            self.logger.info(f"Docker client initialized successfully: {docker_host}")
+            self.docker_available = True
         except DockerException as e:
-            self.logger.error(f"Failed to initialize Docker client: {e}")
-            raise
+            self.logger.warning(
+                f"Docker client unavailable (running in Docker without socket mount): {e}. "
+                f"Monitor will continue via Redis events only."
+            )
+            self.docker_client = None
+            self.docker_available = False
 
         # Load configuration from environment
         self.poll_interval = int(os.getenv("AGENT_POLL_INTERVAL", 30))
@@ -80,7 +87,11 @@ class ContainerMonitor(HemoStatAgent):
 
         Includes both running and exited containers to detect non-zero exit codes.
         Handles Docker API errors gracefully without breaking the loop.
+        Skips polling if Docker is unavailable.
         """
+        if not self.docker_available:
+            return
+
         try:
             containers = self.docker_client.containers.list(
                 all=True, filters={"status": ["running", "exited"]}
@@ -161,18 +172,18 @@ class ContainerMonitor(HemoStatAgent):
             memory_percent = self._calculate_memory_percent(memory_stats)
 
             # Extract network I/O stats
-            networks = stats.get("networks", {})
+            networks = stats.get("networks") or {}
             network_rx_bytes = 0
             network_tx_bytes = 0
-            for net_data in networks.values():
+            for net_data in networks.values() if networks else []:
                 network_rx_bytes += net_data.get("rx_bytes", 0)
                 network_tx_bytes += net_data.get("tx_bytes", 0)
 
             # Extract block I/O stats
-            blkio_stats = stats.get("blkio_stats", {})
+            blkio_stats = stats.get("blkio_stats") or {}
             blkio_read_bytes = 0
             blkio_write_bytes = 0
-            for stat in blkio_stats.get("io_service_bytes_recursive", []):
+            for stat in (blkio_stats.get("io_service_bytes_recursive") or []):
                 if stat.get("op") == "Read":
                     blkio_read_bytes += stat.get("value", 0)
                 elif stat.get("op") == "Write":

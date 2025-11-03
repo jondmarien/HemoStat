@@ -1,11 +1,11 @@
 # Multi-stage build for HemoStat Analyzer Agent using UV
 # Stage 1: Builder - Install dependencies using UV
-FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim as builder
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
 
 WORKDIR /build
 
 # Copy dependency files
-COPY pyproject.toml uv.lock* ./
+COPY README.md pyproject.toml uv.lock* ./
 
 # Copy agents directory for local imports
 COPY agents/ ./agents/

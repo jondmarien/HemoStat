@@ -20,10 +20,10 @@ The HemoStat Dashboard provides a comprehensive real-time visualization of the e
 
 The dashboard is built with modern Streamlit best practices:
 
-- **Streamlit 1.29.0** - Web UI framework with reactive components
-- **Redis Integration** - Reads from `hemostat:events:*` and `hemostat:state:*` keys
+- **Streamlit 1.51.0** - Web UI framework with reactive components, fragments, and bordered containers
+- **Redis Integration** - Reads from `hemostat:events:*` and `hemostat:stats:*` keys
 - **Efficient Caching** - Uses `@st.cache_data(ttl=5)` for 5-second Redis polling cache
-- **Auto-refresh Fragments** - Uses `@st.fragment(run_every="5s")` for partial page updates
+- **Auto-refresh Fragments** - Uses `@st.fragment(run_every=N)` for partial page updates with dynamic intervals
 - **HemoStatLogger** - Consistent logging with agents
 - **Read-only Access** - No pub/sub subscription, polling-based for simplicity
 

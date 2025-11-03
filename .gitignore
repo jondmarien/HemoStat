@@ -5,13 +5,19 @@ plans/
 # Environment and Secrets
 # ============================================================================
 .env                      # Actual environment file with secrets
+.env.local                # Local development environment (auto-detected)
 *.env.local               # Local environment overrides
 .env.*.local              # Environment-specific local files
+.env.docker.*             # Docker-specific environment files (use as needed)
 
 # ============================================================================
 # Python & UV
 # ============================================================================
 __pycache__/              # Python cache directories
+# Agent-specific cache
+agents/**/__pycache__/
+agents/*/__pycache__/
+dashboard/__pycache__/
 *.py[cod]                 # Python compiled files (.pyc, .pyo, .pyd)
 *$py.class                # Python class files
 *.so                      # C extensions

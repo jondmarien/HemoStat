@@ -246,6 +246,50 @@ def get_remediation_stats() -> dict[str, Any]:
 
 
 @st.cache_data(ttl=5)
+def get_all_container_stats() -> dict[str, dict[str, Any]]:
+    """
+    Fetch all container statistics from Redis with 5-second cache.
+
+    Scans Redis for keys matching `hemostat:stats:*` pattern and retrieves
+    parsed stats for each container. Uses SCAN for production safety.
+
+    Returns:
+        dict[str, dict[str, Any]]: Dictionary mapping container IDs to their stats
+    """
+    logger = HemoStatLogger.get_logger("dashboard")
+
+    try:
+        client = get_redis_client()
+        stats_map: dict[str, dict[str, Any]] = {}
+
+        # Use SCAN for production safety (doesn't block Redis)
+        cursor = 0
+        while True:
+            cursor, keys = client.scan(cursor, match="hemostat:stats:*", count=100)
+            for key in keys:
+                try:
+                    # Extract container ID from key format: hemostat:stats:{id}
+                    container_id = key.replace("hemostat:stats:", "")
+                    stats_str = client.get(key)
+
+                    if stats_str:
+                        try:
+                            stats_map[container_id] = json.loads(stats_str)
+                        except json.JSONDecodeError as e:
+                            logger.warning(f"Malformed stats JSON for {container_id}: {e}")
+                except Exception as e:
+                    logger.warning(f"Error processing stats key {key}: {e}")
+
+            if cursor == 0:
+                break
+
+        return stats_map
+    except Exception as e:
+        logger.error(f"Error fetching all container stats: {e}")
+        return {}
+
+
+@st.cache_data(ttl=5)
 def get_false_alarm_count() -> int:
     """
     Count false alarm events from Redis with 5-second cache.
