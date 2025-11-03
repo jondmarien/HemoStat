@@ -158,7 +158,7 @@ If ports are already in use, edit `docker-compose.yml`:
 # Change Grafana port
 grafana:
   ports:
-    - "3001:3000"  # Changed from 3000:3000
+    - "3001:3001"  # Changed from 3000:3000
 
 # Change Prometheus port
 prometheus:
