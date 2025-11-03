@@ -7,6 +7,9 @@ WORKDIR /build
 COPY README.md pyproject.toml uv.lock* ./
 COPY agents/ ./agents/
 
+# Set UV timeout for slow networks
+ENV UV_HTTP_TIMEOUT=300
+
 # Install dependencies
 RUN uv sync --extra agents --no-dev
 

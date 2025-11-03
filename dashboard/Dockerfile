@@ -17,6 +17,9 @@ COPY README.md pyproject.toml uv.lock* ./
 COPY agents/ ./agents/
 COPY dashboard/ ./dashboard/
 
+# Set UV timeout for slow networks
+ENV UV_HTTP_TIMEOUT=300
+
 # Install dependencies with UV
 # Create .venv at /app/.venv so shebangs are correct in runtime stage
 RUN uv sync --extra dashboard --extra agents

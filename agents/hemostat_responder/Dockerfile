@@ -11,6 +11,9 @@ COPY README.md pyproject.toml uv.lock* ./
 # Copy agents directory for local imports
 COPY agents/ ./agents/
 
+# Set UV timeout for slow networks
+ENV UV_HTTP_TIMEOUT=300
+
 # Install dependencies with UV (agents extra includes docker SDK)
 RUN uv sync --extra agents --no-dev
 

@@ -11,6 +11,9 @@ RUN pip install --no-cache-dir uv
 COPY README.md pyproject.toml uv.lock ./
 COPY agents/ ./agents/
 
+# Set UV timeout for slow networks
+ENV UV_HTTP_TIMEOUT=300
+
 # Install dependencies using UV with agents extra group
 # This includes docker==7.0.0 and all base dependencies
 RUN uv sync --extra agents --no-dev
