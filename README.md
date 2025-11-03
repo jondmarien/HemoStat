@@ -432,19 +432,92 @@ HemoStat-test/
 - **[Troubleshooting](https://quartz.chron0.tech/HemoStat/troubleshooting.html)** - Common issues and solutions ([source](docs/TROUBLESHOOTING.md))
 - **[Development](https://quartz.chron0.tech/HemoStat/development.html)** - Contributing and code quality ([source](docs/WARP.md))
 
+## Project Submission Details
+
+### Elevator Pitch
+
+HemoStat is an autonomous container health monitoring system that acts like a doctor on call for your Docker containers. It continuously monitors your infrastructure, uses AI (GPT-4 or Claude) to diagnose root causes with confidence scoring, and safely remediates issues before they impact users—all while keeping your team informed through Slack alerts and a real-time Streamlit dashboard.
+
+**Key Value Propositions:**
+- **Fixes Itself**: Like having a doctor on call for your containers, healing problems before you even notice them
+- **Saves Time**: Reduces the time your team spends fighting fires and lets them focus on building new features
+- **Clear Visibility**: Shows you what's happening at a glance without overwhelming you with alerts
+- **Works Everywhere**: Plays nicely with your existing tools and fits right in with your current workflow
+
+### The Whole Story
+
+HemoStat embodies the DevOps spirit by bridging the gap between development and operations, ensuring applications stay healthy with minimal human intervention. Built as a multi-agent system, HemoStat uses autonomous monitoring, AI-powered analysis, and safe remediation to reduce MTTR (Mean Time To Repair) and prevent alert fatigue.
+
+**Why HemoStat is a DevOps Project:**
+
+HemoStat solves real DevOps challenges:
+- **Autonomous Monitoring**: Continuous health checks without manual intervention, proactive detection before issues impact users
+- **AI-Powered Analysis**: GPT-4/Claude reasoning for root cause identification with confidence scoring to prioritize critical issues
+- **Safe Remediation**: Cooldowns & retries to prevent cascading failures, circuit breakers to protect system stability
+- **Seamless Integration**: Redis pub/sub for reliable message passing, Slack notifications for team visibility
+
+**Multi-Agent Pipeline:**
+1. **Monitor**: Detects container issues (CPU, memory, disk, status)
+2. **Analyzer**: AI-powered diagnostics using GPT-4 or Claude with confidence scoring
+3. **Responder**: Executes safe actions (restart, scale, cleanup, exec) with safety constraints
+4. **Alert**: Sends notifications via Slack/webhooks with deduplication to prevent spam
+
+All agents communicate via Redis pub/sub backbone, ensuring reliable message passing and state management.
+
+**Built With:**
+- Python 3.11+, Redis, Docker & Docker Compose
+- LangChain (LLM orchestration), Streamlit (dashboard), Sphinx (documentation)
+- Prometheus & Grafana (monitoring & observability)
+
+**Try It Out:**
+- **Live Dashboard**: Access the Streamlit dashboard at `http://localhost:8501` after running `docker compose up -d`
+- **Documentation**: Comprehensive docs at [https://quartz.chron0.tech/HemoStat/](https://quartz.chron0.tech/HemoStat/)
+- **Quick Start**: See [Quick Start](#quick-start) section above
+
+**Demo Materials:**
+- **Pitch Deck**: Available in `pitch-deck/` directory (PowerPoint format)
+- **Video Demo**: Live presentation with pitch deck demonstrating the system in action
+- **Dashboard Screenshots**: See the Streamlit dashboard with real-time container health monitoring, metrics, and alert feeds
+
+**Image Gallery:**
+
+![HemoStat Title Slide](pitch-deck/Firefox-2025-11-03%20at%2005.50.46PM@2x.png)
+
+*HemoStat - Autonomous container health monitoring*
+
+![What is HemoStat?](pitch-deck/Firefox-2025-11-03%20at%2005.50.56PM@2x.png)
+
+*Real-time Monitoring • AI Root Cause Analysis • Safe Remediation*
+
+![Multi-agent Pipeline](pitch-deck/Firefox-2025-11-03%20at%2005.51.12PM@2x.png)
+
+*Monitor → Analyzer → Responder → Alert (Redis Backbone)*
+
+![Why HemoStat is a DevOps Project](pitch-deck/Firefox-2025-11-03%20at%2005.51.17PM@2x.png)
+
+*Fixes Itself • Saves Time • Clear Visibility • Works Everywhere*
+
+![Reduce MTTR, Prevent Alert Fatigue](pitch-deck/Firefox-2025-11-03%20at%2005.51.21PM@2x.png)
+
+*Smart Filtering • Safe Automation • Full Visibility • Cross-Platform*
+
+![Our Approach](pitch-deck/Firefox-2025-11-03%20at%2005.51.25PM@2x.png)
+
+*Autonomous Monitoring • AI-Powered Analysis • Safe Remediation • Seamless Integration*
+
+![HemoStat Dashboard Demo](pitch-deck/Firefox-2025-11-03%20at%2005.51.30PM@2x.png)
+
+*Live dashboard showing container health monitoring with real-time metrics and Slack alerts*
+
+**Created By:**
+- **Team Lead**: Jonathan Marien
+- **Team Members**: Imran Yafith, Adam Shaldam, Seyon Sri, Audrey Man
+- **Team Mentor**: Kanwarpreet Singh Khurana
+- **Event**: Canada DevOps Community of Practice Hackathon Toronto - Team 1
+
 ## License
 
 MIT License - See LICENSE file for details
-
-## Team
-
-**Event**: Canada DevOps Community of Practice Hackathon Toronto - Team 1
-
-**Team Mentor**: Kanwarpreet Singh Khurana
-
-**Team Lead**: Jonathan Marien
-
-**Team Members**: Imran Yafith, Adam Shaldam, Seyon Sri, Audrey Man
 
 ---
 
