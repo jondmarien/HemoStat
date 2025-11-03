@@ -92,7 +92,7 @@ def render_sidebar() -> None:
     st.sidebar.write(f"**Refresh Interval**: {st.session_state.refresh_interval}s")
 
     # Manual refresh button
-    if st.sidebar.button("🔄 Refresh Now", use_container_width=True):
+    if st.sidebar.button("🔄 Refresh Now", use_container_width=True):  # Will be updated in Streamlit 1.36+
         st.rerun()
 
     # Settings section

@@ -128,7 +128,7 @@ def render_health_grid(events: list[dict]) -> None:
 
     st.dataframe(
         grid_data,
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
 
@@ -283,7 +283,7 @@ def render_remediation_history(events: list[dict]) -> None:
 
     st.dataframe(
         history_data,
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
 
