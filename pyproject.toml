@@ -31,54 +31,54 @@ classifiers = [
 
 # Core dependencies for Phase 1
 dependencies = [
-    "redis==5.0.1",              # Redis Python client with pub/sub support
-    "python-dotenv==1.0.0",      # Environment variable loading from .env files
-    "python-json-logger==2.0.7", # Structured JSON logging
+    "redis==7.0.1",              # Redis Python client with pub/sub support
+    "python-dotenv==1.2.1",      # Environment variable loading from .env files
+    "python-json-logger==4.0.0", # Structured JSON logging
 ]
 
 [project.optional-dependencies]
 # Phase 2 - Agent Implementations
 agents = [
-    "docker==7.0.0",              # Monitor/Responder agents for container management
-    "langchain==0.1.0",           # LLM orchestration for Analyzer agent
-    "langchain-openai==0.0.5",    # OpenAI provider integration for LangChain
-    "langchain-anthropic==0.1.0", # Anthropic provider integration for LangChain
-    "openai==1.10.0",             # OpenAI GPT-4 integration
-    "anthropic>=0.16.0",          # Anthropic Claude integration (compatible with langchain-anthropic)
-    "requests==2.31.0",           # HTTP client for Alert agent (Slack webhooks)
+    "docker==7.1.0",              # Monitor/Responder agents for container management
+    "langchain==1.0.3",           # LLM orchestration for Analyzer agent
+    "langchain-openai==1.0.1",    # OpenAI provider integration for LangChain
+    "langchain-anthropic==1.0.1", # Anthropic provider integration for LangChain
+    "openai==2.6.1",              # OpenAI GPT-4 integration
+    "anthropic>=0.72.0",          # Anthropic Claude integration (compatible with langchain-anthropic)
+    "requests==2.32.5",           # HTTP client for Alert agent (Slack webhooks)
 ]
 
 # Phase 3 - Dashboard
 dashboard = [
-    "streamlit==1.29.0", # Web UI framework for live monitoring dashboard
+    "streamlit==1.51.0", # Web UI framework for live monitoring dashboard
 ]
 
 # Phase 4 - Testing & Monitoring
 dev = [
-    "pytest==7.4.0",          # Unit testing framework
-    "pytest-asyncio==0.21.0", # Async test support
-    "pytest-cov==4.1.0",      # Code coverage reporting
-    "ruff==0.5.3",            # Fast Python linter and formatter
-    "ty==0.0.1a25",           # Fast type checker from Astral (written in Rust)
-    "pre-commit==3.6.0",      # Git hooks for code quality
+    "pytest==8.4.2",         # Unit testing framework
+    "pytest-asyncio==1.2.0", # Async test support
+    "pytest-cov==7.0.0",     # Code coverage reporting
+    "ruff==0.5.3",           # Fast Python linter and formatter
+    "ty==0.0.1a25",          # Fast type checker from Astral (written in Rust)
+    "pre-commit==4.0.1",     # Git hooks for code quality
 ]
 
 # All optional dependencies
 all = [
-    "docker==7.0.0",
-    "langchain==0.1.0",
-    "langchain-openai==0.0.5",
-    "langchain-anthropic==0.1.0",
-    "openai==1.10.0",
-    "anthropic>=0.16.0",
-    "requests==2.31.0",
-    "streamlit==1.29.0",
-    "pytest==7.4.0",
-    "pytest-asyncio==0.21.0",
-    "pytest-cov==4.1.0",
+    "docker==7.1.0",
+    "langchain==1.0.3",
+    "langchain-openai==1.0.1",
+    "langchain-anthropic==1.0.1",
+    "openai==2.6.1",
+    "anthropic>=0.72.0",
+    "requests==2.32.5",
+    "streamlit==1.51.0",
+    "pytest==8.4.2",
+    "pytest-asyncio==1.2.0",
+    "pytest-cov==7.0.0",
     "ruff==0.5.3",
     "ty==0.0.1a25",
-    "pre-commit==3.6.0",
+    "pre-commit==4.0.1",
 ]
 
 [project.urls]
@@ -91,11 +91,11 @@ Issues = "https://github.com/jondmarien/HemoStat/issues"
 # UV configuration for fast Python package management
 managed = true
 dev-dependencies = [
-    "pytest==7.4.0",
-    "pytest-asyncio==0.21.0",
-    "pytest-cov==4.1.0",
+    "pytest==8.4.2",
+    "pytest-asyncio==1.2.0",
+    "pytest-cov==7.0.0",
     "ruff==0.5.3",
-    "pre-commit==3.6.0",
+    "pre-commit==4.0.1",
     "ty==0.0.1a25",
 ]
 
