@@ -6,7 +6,6 @@ Encapsulates Redis pub/sub communication patterns and shared state management.
 """
 
 import json
-import logging
 import os
 import signal
 import time
@@ -17,8 +16,13 @@ from typing import Any
 import redis
 from dotenv import load_dotenv
 
+from agents.logger import HemoStatLogger
+
 # Load environment variables from .env file
 load_dotenv()
+
+# Get logger for this module
+logger = HemoStatLogger.get_logger("agent_base")
 
 
 class HemoStatConnectionError(Exception):
@@ -68,8 +72,8 @@ class HemoStatAgent:
         self.redis_port = redis_port
         self.redis_db = redis_db
 
-        # Initialize logger
-        self.logger = self._setup_logger()
+        # Initialize logger using custom HemoStatLogger
+        self.logger = HemoStatLogger.get_logger(agent_name)
 
         # Initialize Redis connection with retry logic
         self.redis = self._connect_redis()
@@ -85,44 +89,6 @@ class HemoStatAgent:
             f"Agent '{self.agent_name}' initialized successfully",
             extra={"agent": self.agent_name},
         )
-
-    def _setup_logger(self) -> logging.Logger:
-        """
-        Set up structured logging for the agent.
-
-        Returns:
-            Configured logger instance
-        """
-        logger = logging.getLogger(f"hemostat.{self.agent_name}")
-        log_level = os.getenv("LOG_LEVEL", "INFO")
-        logger.setLevel(getattr(logging, log_level))
-
-        if not logger.handlers:
-            handler = logging.StreamHandler()
-            log_format = os.getenv("LOG_FORMAT", "text")
-
-            if log_format == "json":
-                try:
-                    from pythonjsonlogger import jsonlogger
-
-                    formatter = jsonlogger.JsonFormatter(
-                        fmt="%(timestamp)s %(level)s %(agent)s %(message)s",
-                        rename_fields={"levelname": "level", "name": "logger"},
-                    )
-                except ImportError:
-                    logger.warning("python-json-logger not installed; falling back to text format")
-                    formatter = logging.Formatter(
-                        f"[{self.agent_name}] %(asctime)s - %(levelname)s - %(message)s"
-                    )
-            else:
-                formatter = logging.Formatter(
-                    f"[{self.agent_name}] %(asctime)s - %(levelname)s - %(message)s"
-                )
-
-            handler.setFormatter(formatter)
-            logger.addHandler(handler)
-
-        return logger
 
     def _connect_redis(self) -> redis.Redis:
         """

@@ -10,18 +10,14 @@ Import paths supported:
 - from agents.hemostat_alert.alert import AlertNotifier (implementation module)
 """
 
-import logging
 import os
 import sys
-from typing import TYPE_CHECKING
 
 from dotenv import load_dotenv
 
 from agents.agent_base import HemoStatConnectionError
 from agents.hemostat_alert import AlertNotifier
-
-if TYPE_CHECKING:
-    pass
+from agents.logger import HemoStatLogger
 
 
 def main() -> None:
@@ -33,13 +29,9 @@ def main() -> None:
     """
     load_dotenv()
 
-    # Set up logging
-    log_level_str = os.getenv("LOG_LEVEL", "INFO").upper()
-    logging.basicConfig(
-        level=log_level_str,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
-    logger = logging.getLogger("hemostat.alert")
+    # Configure root logger and get logger for this module
+    HemoStatLogger.configure_root_logger()
+    logger = HemoStatLogger.get_logger("alert")
 
     logger.info("=" * 80)
     logger.info("HemoStat Alert Agent Starting")

@@ -6,7 +6,6 @@ safety constraints including cooldown periods, circuit breakers, and audit loggi
 """
 
 import json
-import logging
 import os
 import time
 from datetime import UTC, datetime
@@ -821,11 +820,14 @@ class ContainerResponder(HemoStatAgent):
 
             self.publish_event("hemostat:remediation_complete", "remediation_complete", data)
 
-            log_level = "INFO" if result.get("status") == "success" else "ERROR"
-            self.logger.log(
-                logging.INFO if log_level == "INFO" else logging.ERROR,
-                f"Published remediation_complete: {data['container']} - {result.get('status')}",
-            )
+            if result.get("status") == "success":
+                self.logger.info(
+                    f"Published remediation_complete: {data['container']} - {result.get('status')}"
+                )
+            else:
+                self.logger.error(
+                    f"Published remediation_complete: {data['container']} - {result.get('status')}"
+                )
         except Exception as e:
             self.logger.error(f"Error publishing remediation_complete: {e}")
 

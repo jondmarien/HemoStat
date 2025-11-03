@@ -10,7 +10,6 @@ Import paths supported:
 - from agents.hemostat_monitor.monitor import ContainerMonitor (implementation module)
 """
 
-import logging
 import sys
 
 from docker.errors import DockerException
@@ -18,6 +17,7 @@ from dotenv import load_dotenv
 
 from agents.agent_base import HemoStatConnectionError
 from agents.hemostat_monitor import ContainerMonitor
+from agents.logger import HemoStatLogger
 
 
 def main() -> None:
@@ -29,8 +29,10 @@ def main() -> None:
     # Load environment variables
     load_dotenv()
 
-    # Set up logging
-    logger = logging.getLogger("hemostat.monitor")
+    # Configure root logger and get logger for this module
+    HemoStatLogger.configure_root_logger()
+    logger = HemoStatLogger.get_logger("monitor")
+
     logger.info("=" * 60)
     logger.info("HemoStat Monitor Agent Starting")
     logger.info("=" * 60)

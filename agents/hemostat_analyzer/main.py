@@ -10,13 +10,13 @@ Import paths supported:
 - from agents.hemostat_analyzer.analyzer import HealthAnalyzer (implementation module)
 """
 
-import logging
 import sys
 
 from dotenv import load_dotenv
 
 from agents.agent_base import HemoStatConnectionError
 from agents.hemostat_analyzer import HealthAnalyzer
+from agents.logger import HemoStatLogger
 
 
 def main() -> None:
@@ -28,8 +28,10 @@ def main() -> None:
     # Load environment variables
     load_dotenv()
 
-    # Set up logging
-    logger = logging.getLogger("hemostat.analyzer")
+    # Configure root logger and get logger for this module
+    HemoStatLogger.configure_root_logger()
+    logger = HemoStatLogger.get_logger("analyzer")
+
     logger.info("=" * 60)
     logger.info("HemoStat Analyzer Agent Starting")
     logger.info("=" * 60)

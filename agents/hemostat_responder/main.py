@@ -10,7 +10,6 @@ Import paths supported:
 - from agents.hemostat_responder.responder import ContainerResponder (implementation module)
 """
 
-import logging
 import sys
 
 from docker.errors import DockerException
@@ -18,6 +17,7 @@ from dotenv import load_dotenv
 
 from agents.agent_base import HemoStatConnectionError
 from agents.hemostat_responder import ContainerResponder
+from agents.logger import HemoStatLogger
 
 
 def main() -> None:
@@ -30,10 +30,9 @@ def main() -> None:
     # Load environment variables
     load_dotenv()
 
-    # Set up logging
-    log_level = logging.INFO
-    logger = logging.getLogger("hemostat.responder")
-    logger.setLevel(log_level)
+    # Configure root logger and get logger for this module
+    HemoStatLogger.configure_root_logger()
+    logger = HemoStatLogger.get_logger("responder")
 
     responder = None
     try:
