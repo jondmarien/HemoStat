@@ -95,6 +95,24 @@ class HealthAnalyzer(HemoStatAgent):
                     temperature=0.3,
                 )
 
+            elif "/" in self.ai_model:  # Hugging Face model (e.g., "openai/gpt-oss-120b")
+                from langchain_huggingface import HuggingFaceEndpoint
+
+                hf_token = os.getenv("HUGGINGFACE_API_KEY") or os.getenv("HF_TOKEN", "")
+                if not hf_token.strip():
+                    self.logger.warning(
+                        "HUGGINGFACE_API_KEY or HF_TOKEN not set; AI analysis disabled (using rule-based fallback)"
+                    )
+                    return None
+
+                self.logger.info(f"Initializing HuggingFaceEndpoint with model: {self.ai_model}")
+                return HuggingFaceEndpoint(
+                    repo_id=self.ai_model,
+                    temperature=0.3,
+                    max_new_tokens=512,
+                    huggingfacehub_api_token=hf_token,
+                )
+
             else:
                 self.logger.warning(f"Unknown AI model: {self.ai_model}; using rule-based fallback")
                 return None
