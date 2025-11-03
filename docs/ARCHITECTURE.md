@@ -4,7 +4,7 @@
 
 ### Agent Communication Model
 
-```
+```mermaid
 ┌─────────────┐
 │   Monitor   │ Polls Docker every 30s
 └──────┬──────┘
@@ -50,7 +50,7 @@
 
 ### Redis Channel Structure
 
-```
+```text
 hemostat:health_alert           (Monitor → Analyzer)
 hemostat:remediation_needed     (Analyzer → Responder)
 hemostat:remediation_complete   (Responder → Alert)
@@ -82,12 +82,14 @@ hemostat:events:<type>          (Event log)
 ## Scaling Considerations
 
 ### Horizontal Scaling
+
 - Run multiple Monitor instances (one per cluster)
 - Run multiple Analyzer instances (share load via Redis)
 - Run multiple Responder instances (Redis ensures atomicity)
 - Keep single Alert and Dashboard
 
 ### Performance Characteristics
+
 - Monitor: O(n) where n = number of containers
 - Analyzer: O(1) per alert, limited by Claude API rate
 - Responder: O(1) per remediation request
@@ -95,6 +97,7 @@ hemostat:events:<type>          (Event log)
 - Dashboard: O(1) for display updates
 
 ### Redis as Bottleneck
+
 - For large scale, use Redis Cluster
 - For very high volume, add message queue (RabbitMQ)
 - Add persistent storage for audit logs
@@ -102,6 +105,7 @@ hemostat:events:<type>          (Event log)
 ## Extensibility
 
 ### Adding New Agents
+
 1. Create `agents/my_agent/my_agent.py`
 2. Import `HemoStatAgent` from `agent_base.py`
 3. Override `run()` method
@@ -111,12 +115,14 @@ hemostat:events:<type>          (Event log)
 7. Add service to docker-compose.yml
 
 ### Adding New Remediation Actions
+
 1. Edit `agents/hemostat_responder/hemostat_responder.py`
 2. Add new method (e.g., `scale_container()`)
 3. Update `execute_remediation()` to call new method
 4. Update Analyzer to suggest new action
 
 ### Customizing Monitor Thresholds
+
 ```python
 # In agents/hemostat_monitor/hemostat_monitor.py
 self.thresholds = {
@@ -128,22 +134,26 @@ self.thresholds = {
 ## Deployment Options
 
 ### Option 1: Local Docker Compose (Demo)
+
 - Simplest setup
 - All services on single machine
 - Perfect for testing
 
 ### Option 2: Kubernetes
+
 - Horizontal scaling
 - High availability
 - Production-grade
 - More complex setup
 
 ### Option 3: AWS ECS
+
 - Managed containers
 - Auto-scaling
 - Integration with CloudWatch
 
 ### Option 4: Multi-Cloud
+
 - Deploy across multiple cloud providers
 - Redis cluster for centralized state
 - Cloud-specific agents for remediation
@@ -151,6 +161,7 @@ self.thresholds = {
 ## Monitoring HemoStat Itself
 
 ### Key Metrics to Track
+
 1. Monitor cycle time (should be ~30s)
 2. Analyzer response time (should be <5s)
 3. Responder execution time (should be <10s)
@@ -160,6 +171,7 @@ self.thresholds = {
 7. Mean time to fix (should be ~13s)
 
 ### Health Checks
+
 - All agents restart automatically on failure
 - Redis connectivity verified at startup
 - Docker socket connectivity verified at startup

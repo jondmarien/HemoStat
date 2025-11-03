@@ -3,6 +3,7 @@
 ## Redis Pub/Sub Channels
 
 ### Health Alert Channel
+
 **Channel:** `hemostat:health_alert`
 **Publisher:** HemoStat Monitor
 **Subscriber:** HemoStat Analyzer
@@ -27,6 +28,7 @@
 ```
 
 ### Remediation Needed Channel
+
 **Channel:** `hemostat:remediation_needed`
 **Publisher:** HemoStat Analyzer
 **Subscriber:** HemoStat Responder
@@ -51,6 +53,7 @@
 ```
 
 ### Remediation Complete Channel
+
 **Channel:** `hemostat:remediation_complete`
 **Publisher:** HemoStat Responder
 **Subscriber:** HemoStat Alert
@@ -73,6 +76,7 @@
 ```
 
 ### False Alarm Channel
+
 **Channel:** `hemostat:false_alarm`
 **Publisher:** HemoStat Analyzer
 **Subscriber:** HemoStat Alert
@@ -92,6 +96,7 @@
 ## Redis Key Structure
 
 ### Container Stats
+
 **Key:** `hemostat:stats:<container_name>`
 **TTL:** 300 seconds
 **Type:** JSON string
@@ -107,6 +112,7 @@
 ```
 
 ### Remediation History
+
 **Key:** `hemostat:remediation:<container_name>`
 **TTL:** 3600 seconds
 **Type:** JSON string
@@ -119,6 +125,7 @@
 ```
 
 ### Event Log
+
 **Key:** `hemostat:events:<event_type>`
 **TTL:** 3600 seconds
 **Type:** JSON array (max 100 events)
@@ -148,16 +155,19 @@ class HemoStatAgent:
 ## Error Handling
 
 ### On Connection Loss
+
 - All agents implement automatic retry logic
 - Exponential backoff starting at 1 second
 - Maximum 10 retries before failing
 
 ### On Invalid Message
+
 - Log error, skip message
 - Continue processing next message
 - No cascading failures
 
 ### On Remediation Failure
+
 - Log error details
 - Don't retry immediately (cooldown applies)
 - Update status to "failed"
@@ -165,16 +175,19 @@ class HemoStatAgent:
 ## Monitoring Communication
 
 ### View All Events
+
 ```bash
 docker exec hemostat-redis redis-cli SUBSCRIBE "hemostat:*"
 ```
 
 ### View Specific Channel
+
 ```bash
 docker exec hemostat-redis redis-cli SUBSCRIBE "hemostat:remediation_needed"
 ```
 
 ### Check Event Backlog
+
 ```bash
 docker exec hemostat-redis redis-cli KEYS "hemostat:events:*"
 docker exec hemostat-redis redis-cli GET "hemostat:events:remediation_complete"
@@ -183,16 +196,19 @@ docker exec hemostat-redis redis-cli GET "hemostat:events:remediation_complete"
 ## Integration Points
 
 ### Custom Analyzer
+
 1. Subscribe to `hemostat:health_alert`
 2. Implement custom analysis logic
 3. Publish to `hemostat:remediation_needed` or `hemostat:false_alarm`
 
 ### Custom Responder
+
 1. Subscribe to `hemostat:remediation_needed`
 2. Implement custom remediation logic
 3. Publish to `hemostat:remediation_complete`
 
 ### Custom Dashboard
+
 1. Read from `hemostat:stats:*` for current metrics
 2. Read from `hemostat:events:*` for history
 3. Subscribe to relevant channels for live updates

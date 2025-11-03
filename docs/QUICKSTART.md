@@ -41,6 +41,7 @@ docker-compose ps
 ```
 
 Expected services:
+
 - `hemostat-redis` - Message broker and state storage
 - `hemostat-monitor` - Container health monitoring
 - `hemostat-analyzer` - AI-powered analysis
@@ -108,6 +109,7 @@ docker-compose logs -f monitor analyzer responder alert
 ```
 
 Expected log messages:
+
 - **Monitor**: "Health alert published for hemostat-test-api"
 - **Analyzer**: "Remediation needed: restart (confidence: 0.9)"
 - **Responder**: "Container restarted successfully"

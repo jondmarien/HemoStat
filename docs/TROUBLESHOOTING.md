@@ -47,6 +47,7 @@ docker exec hemostat-test-api stress --cpu 4 --timeout 10
 ```
 
 **Solutions:**
+
 - Increase memory/CPU stress to exceed thresholds (80% memory, 85% CPU)
 - Check Monitor polling interval (default 30 seconds)
 - Verify Redis is healthy: `docker-compose logs hemostat-redis`
@@ -68,10 +69,70 @@ docker exec hemostat-redis redis-cli KEYS "hemostat:*"
 ```
 
 **Solutions:**
+
 - Without API key, system uses fallback rule-based analysis (normal!)
 - Check API key is valid: `curl https://api.openai.com/v1/models -H "Authorization: Bearer $OPENAI_API_KEY"`
 - Check rate limits on OpenAI account
 - Review Analyzer logs for error details
+
+### 3a. Analyzer - Anthropic API Authentication Error (401)
+
+**Problem:** `Error code: 401 - invalid x-api-key` when using Claude models
+
+**Root Causes:**
+
+1. **Wrong environment file being loaded** - Docker Compose uses `.env` by default, not `.env.docker.{platform}`
+2. **Incorrect ChatAnthropic parameter** - Using `model_name` instead of `model`
+3. **API key not in the correct .env file** - Key is in `.env.docker.windows` but not in `.env`
+
+**Check:**
+```bash
+# Verify API key is in the container
+docker exec hemostat-analyzer printenv | grep ANTHROPIC_API_KEY
+
+# Check which env file Docker Compose is using
+docker inspect hemostat-analyzer | grep -A 20 "Env"
+
+# Verify the API key format (should start with sk-ant-)
+docker exec hemostat-analyzer printenv ANTHROPIC_API_KEY
+```
+
+**Solutions:**
+
+**Option 1: Use correct env file with Docker Compose (Recommended)**
+
+Always use the platform-specific env file when building/running:
+
+```bash
+# Windows
+docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows build analyzer --no-cache
+docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows up -d analyzer
+
+# Linux
+docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux build analyzer --no-cache
+docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux up -d analyzer
+
+# macOS
+docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos build analyzer --no-cache
+docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos up -d analyzer
+```
+
+**Option 2: Add API key to default .env file**
+
+Copy your Anthropic API key from `.env.docker.windows` to `.env`:
+```bash
+# Edit .env and set:
+ANTHROPIC_API_KEY=sk-ant-api03-YOUR_KEY_HERE
+AI_MODEL=claude-haiku-4-5-20251001
+```
+
+Then rebuild normally:
+```bash
+docker compose build analyzer --no-cache
+docker compose up -d analyzer
+```
+
+**See Also:** README.md section "Building & Rebuilding Services" for complete platform-specific commands
 
 ### 4. Responder Not Fixing Issues
 
@@ -90,6 +151,7 @@ docker exec hemostat-responder docker restart hemostat-test-api
 ```
 
 **Solutions:**
+
 - Check cooldown not active: `docker exec hemostat-redis redis-cli GET "hemostat:remediation:*"`
 - Verify Docker socket is mounted correctly in docker-compose.yml
 - Check safety mechanisms (cooldown, max retries) aren't triggered
@@ -115,6 +177,7 @@ docker exec hemostat-dashboard ping redis
 ```
 
 **Solutions:**
+
 - Wait 30+ seconds for Monitor to collect first stats
 - Manually refresh Streamlit page
 - Check Redis is healthy and storing data
@@ -143,6 +206,7 @@ curl -X POST $SLACK_WEBHOOK_URL   -H 'Content-type: application/json'   -d '{
 ```
 
 **Solutions:**
+
 - Without Slack webhook, system still works (just no notifications)
 - Verify webhook URL is correct and active
 - Check Slack workspace permissions
@@ -166,6 +230,7 @@ docker exec hemostat-redis redis-cli --stat
 ```
 
 **Solutions:**
+
 - Reduce Monitor polling interval (edit hemostat_monitor.py)
 - Increase Docker resource limits (edit docker-compose.yml)
 - Check Redis is not full: `docker exec hemostat-redis redis-cli INFO memory`

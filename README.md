@@ -252,6 +252,65 @@ docker compose logs -f dashboard
 docker compose down
 ```
 
+#### Building & Rebuilding Services
+
+When making code changes or updating environment variables, you need to rebuild the affected service(s). Always use the platform-specific compose files and env files:
+
+**On Windows (Docker Desktop):**
+
+```bash
+# Rebuild a single service
+docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows build --no-cache
+
+# Rebuild all services
+docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows build --no-cache
+
+# Rebuild and restart a service
+docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows up -d --build
+
+# Rebuild and restart all services
+docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows up -d --build
+```
+
+**On Linux:**
+
+```bash
+# Rebuild a single service
+docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux build --no-cache
+
+# Rebuild all services
+docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux build --no-cache
+
+# Rebuild and restart a service
+docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux up -d --build 
+
+# Rebuild and restart all services
+docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux up -d --build
+```
+
+**On macOS:**
+
+```bash
+# Rebuild a single service 
+docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos build --no-cache
+
+# Rebuild all services
+docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos build --no-cache
+
+# Rebuild and restart a service
+docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos up -d --build
+
+# Rebuild and restart all services
+docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos up -d --build
+```
+
+**Important Notes:**
+
+- **`--env-file .env.docker.{platform}`** - Ensures API keys and platform-specific settings are loaded correctly
+- **`-f docker-compose.yml -f docker-compose.{platform}.yml`** - Applies platform-specific Docker socket overrides (critical for container monitoring)
+- **`--no-cache`** - Forces a fresh build, useful when dependencies or code changes need to be picked up
+- **`--build`** - Rebuilds images before starting containers (shorthand for build + up)
+
 #### Platform Detection
 
 HemoStat automatically detects your operating system and configures the Docker daemon socket appropriately:

@@ -37,7 +37,13 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import redis; redis.Redis(host='redis').ping()"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import redis; redis.Redis(host='redis').ping()",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -58,6 +64,7 @@ services:
       AI_MODEL: ${AI_MODEL:-gpt-4}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      HUGGINGFACE_API_KEY: ${HUGGINGFACE_API_KEY}
       AI_FALLBACK_ENABLED: ${AI_FALLBACK_ENABLED:-true}
       ANALYZER_CONFIDENCE_THRESHOLD: ${ANALYZER_CONFIDENCE_THRESHOLD:-0.7}
       ANALYZER_HISTORY_SIZE: ${ANALYZER_HISTORY_SIZE:-10}
@@ -67,7 +74,13 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import redis; redis.Redis(host='redis').ping()"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import redis; redis.Redis(host='redis').ping()",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -96,7 +109,13 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import redis; redis.Redis(host='redis').ping()"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import redis; redis.Redis(host='redis').ping()",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -124,7 +143,13 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import redis; redis.Redis(host='redis').ping()"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import redis; redis.Redis(host='redis').ping()",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -161,7 +186,7 @@ services:
       - hemostat-network
 
   # Test Services (Phase 4) - For demo and integration testing
-  
+
   # Test API - HTTP service with controllable resource usage
   test-api:
     container_name: hemostat-test-api
@@ -180,7 +205,13 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -190,7 +221,7 @@ services:
     labels:
       hemostat.test: "true"
       hemostat.service: "test-api"
-  
+
   # Test Worker - Background worker with periodic resource spikes
   test-worker:
     container_name: hemostat-test-worker

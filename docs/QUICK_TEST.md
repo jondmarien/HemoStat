@@ -18,17 +18,20 @@ redis-cli ping
 ## Test 2: Monitor Agent (2 minutes)
 
 **Terminal 1:**
+
 ```bash
 docker-compose up -d redis
 uv run python -m agents.hemostat_monitor.main
 ```
 
 **Terminal 2:**
+
 ```bash
 redis-cli SUBSCRIBE hemostat:health_alert
 ```
 
 **Terminal 3:**
+
 ```bash
 docker run -d --name test-nginx nginx:latest
 # Wait 30 seconds, should see health alert in Terminal 2
@@ -38,22 +41,26 @@ docker stop test-nginx && docker rm test-nginx
 ## Test 3: Analyzer Agent (3 minutes)
 
 **Terminal 1:**
+
 ```bash
 docker-compose up -d redis
 uv run python -m agents.hemostat_monitor.main
 ```
 
 **Terminal 2:**
+
 ```bash
 AI_FALLBACK_ENABLED=true uv run python -m agents.hemostat_analyzer.main
 ```
 
 **Terminal 3:**
+
 ```bash
 redis-cli SUBSCRIBE hemostat:remediation_needed hemostat:false_alarm
 ```
 
 **Terminal 4:**
+
 ```bash
 # Create container with sustained high CPU
 docker run -d --name cpu-test busybox sh -c "while true; do : ; done"
@@ -64,27 +71,32 @@ docker stop cpu-test && docker rm cpu-test
 ## Test 4: Responder Agent (3 minutes)
 
 **Terminal 1:**
+
 ```bash
 docker-compose up -d redis
 uv run python -m agents.hemostat_monitor.main
 ```
 
 **Terminal 2:**
+
 ```bash
 AI_FALLBACK_ENABLED=true uv run python -m agents.hemostat_analyzer.main
 ```
 
 **Terminal 3:**
+
 ```bash
 uv run python -m agents.hemostat_responder.main
 ```
 
 **Terminal 4:**
+
 ```bash
 redis-cli SUBSCRIBE hemostat:remediation_complete
 ```
 
 **Terminal 5:**
+
 ```bash
 docker run -d --name restart-test nginx:latest
 # Wait 90 seconds for Monitor/Analyzer to detect
@@ -97,16 +109,19 @@ docker stop restart-test && docker rm restart-test
 ## Test 5: Alert Agent (2 minutes)
 
 **Terminal 1:**
+
 ```bash
 docker-compose up -d
 ```
 
 **Terminal 2:**
+
 ```bash
 redis-cli LRANGE "hemostat:events:all" 0 -1
 ```
 
 **Terminal 3:**
+
 ```bash
 docker run -d --name alert-test nginx:latest
 # Wait 90 seconds for full workflow
@@ -141,6 +156,7 @@ docker-compose down
 ## Test 7: Safety Mechanisms (3 minutes)
 
 **Cooldown Test:**
+
 ```bash
 # Terminal 1
 RESPONDER_COOLDOWN_SECONDS=10 uv run python -m agents.hemostat_responder.main
