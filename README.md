@@ -9,6 +9,7 @@ HemoStat is a multi-agent system that autonomously monitors, analyzes, and remed
 - **Safe Remediation**: Automated container recovery with safety constraints and cooldown periods
 - **Slack Alerts**: Real-time notifications for critical events
 - **Live Dashboard**: Streamlit-based monitoring interface
+- **Demo Scripts**: Automated scenarios for testing and hackathon presentations
 
 ## Tech Stack
 
@@ -59,6 +60,71 @@ All agents communicate via Redis pub/sub and share state through Redis KV store
 - **Alert Agent**: Sends notifications to external systems (Slack webhooks), stores events in Redis for dashboard consumption, provides comprehensive audit trail of all system actions, and implements event deduplication to prevent notification spam
 
 All agents inherit from the shared `HemoStatAgent` base class, which provides Redis pub/sub primitives and state management.
+
+## Demo & Testing
+
+### Running Demo Scenarios
+
+**Bash (Linux, macOS, Git Bash, WSL):**
+
+```bash
+# Start all services including test containers
+docker-compose up -d
+
+# Verify system is working
+./scripts/verify_message_flow.sh
+
+# Run demo scenarios
+./scripts/demo_trigger_cpu_spike.sh      # CPU spike detection
+./scripts/demo_trigger_high_memory.sh    # Memory leak detection
+./scripts/demo_trigger_cleanup.sh        # Cleanup remediation
+
+# View Dashboard
+open http://localhost:8501
+```
+
+**Zsh (macOS):**
+
+```zsh
+# Start all services including test containers
+docker-compose up -d
+
+# Verify system is working
+./scripts/verify_message_flow.zsh
+
+# Run demo scenarios
+./scripts/demo_trigger_cpu_spike.zsh      # CPU spike detection
+./scripts/demo_trigger_high_memory.zsh    # Memory leak detection
+./scripts/demo_trigger_cleanup.zsh        # Cleanup remediation
+
+# View Dashboard
+open http://localhost:8501
+```
+
+**PowerShell (Windows):**
+
+```powershell
+# Start all services including test containers
+docker-compose up -d
+
+# Verify system is working
+.\scripts\verify_message_flow.ps1
+
+# Run demo scenarios
+.\scripts\demo_trigger_cpu_spike.ps1      # CPU spike detection
+.\scripts\demo_trigger_high_memory.ps1    # Memory leak detection
+.\scripts\demo_trigger_cleanup.ps1        # Cleanup remediation
+
+# View Dashboard
+start http://localhost:8501
+```
+
+### Test Services
+
+- **hemostat-test-api**: HTTP API with controllable resource usage (port 5000)
+- **hemostat-test-worker**: Background worker with periodic spikes
+
+See `scripts/README.md` for detailed documentation.
 
 ## Quick Start
 
@@ -125,6 +191,19 @@ All agents inherit from the shared `HemoStatAgent` base class, which provides Re
    ```
 
 ### Running Agents (Phase 2+) and Dashboard (Phase 3)
+
+#### Running with Test Services
+
+```bash
+# Start all services including test-api and test-worker
+docker-compose up -d
+
+# Verify all services are running
+docker-compose ps
+
+# View logs for specific services
+docker-compose logs -f test-api test-worker
+```
 
 #### Local Development (Auto-Detected Platform)
 
@@ -217,9 +296,24 @@ HemoStat-test/
 │   ├── hemostat_analyzer/          # Analyzer agent ✅
 │   ├── hemostat_responder/         # Responder agent ✅
 │   └── hemostat_alert/             # Alert agent ✅
-├── dashboard/                       # Streamlit UI (Phase 3)
-├── scripts/                         # Demo and test scripts (Phase 3)
-├── tests/                           # Test suite (Phase 4)
+├── dashboard/                       # Streamlit UI (Phase 3) ✅
+├── scripts/                         # Demo and test scripts ✅
+│   ├── test_api.py                  # Test API service
+│   ├── test_worker.py               # Test worker service
+│   ├── demo_trigger_cpu_spike.sh    # CPU spike demo (bash)
+│   ├── demo_trigger_cpu_spike.zsh   # CPU spike demo (zsh)
+│   ├── demo_trigger_cpu_spike.ps1   # CPU spike demo (PowerShell)
+│   ├── demo_trigger_high_memory.sh  # Memory spike demo (bash)
+│   ├── demo_trigger_high_memory.zsh # Memory spike demo (zsh)
+│   ├── demo_trigger_high_memory.ps1 # Memory spike demo (PowerShell)
+│   ├── demo_trigger_cleanup.sh      # Cleanup demo (bash)
+│   ├── demo_trigger_cleanup.zsh     # Cleanup demo (zsh)
+│   ├── demo_trigger_cleanup.ps1     # Cleanup demo (PowerShell)
+│   ├── verify_message_flow.sh       # E2E verification (bash)
+│   ├── verify_message_flow.zsh      # E2E verification (zsh)
+│   ├── verify_message_flow.ps1      # E2E verification (PowerShell)
+│   └── README.md                    # Scripts documentation
+├── tests/                           # Test suite (Phase 5)
 ├── docs/                            # Detailed documentation
 ├── docker-compose.yml               # Docker Compose configuration
 ├── .env.example                     # Environment template
@@ -253,10 +347,16 @@ HemoStat-test/
 - ✅ Event timeline with filtering
 - ✅ Docker Compose integration
 
-### Phase 4: Testing & Optimization
+### Phase 4: Integration Testing & Demo Infrastructure ✅ (Complete)
+
+- ✅ Demo scripts and test services
+- ✅ End-to-end message flow verification
+- ✅ Test API with controllable resource usage
+- ✅ Test worker with periodic spikes
+
+### Phase 5: Testing & Optimization
 
 - ⏳ Unit and integration tests
-- ⏳ Demo scripts and test services
 - ⏳ Performance profiling
 - ⏳ Production deployment guide
 
