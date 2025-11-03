@@ -20,6 +20,7 @@ services:
   # Monitor Agent - Continuously polls Docker containers for health issues
   monitor:
     container_name: hemostat-monitor
+    user: root
     build:
       context: .
       dockerfile: agents/hemostat_monitor/Dockerfile
@@ -77,6 +78,7 @@ services:
   # Responder Agent - Executes safe container remediation with safety constraints
   responder:
     container_name: hemostat-responder
+    user: root
     build:
       context: .
       dockerfile: agents/hemostat_responder/Dockerfile
