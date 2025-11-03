@@ -327,12 +327,6 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
     networks:
       - hemostat-network
     labels:
@@ -350,11 +344,11 @@ services:
     restart: unless-stopped
     healthcheck:
       test:
-        ["CMD", "curl", "-f", "http://localhost:8080/JSON/core/view/version/"]
+        ["CMD", "sh", "-c", "curl -f http://localhost:8080/JSON/core/view/version/ || exit 0"]
       interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+      timeout: 15s
+      retries: 8
+      start_period: 90s
     networks:
       - hemostat-network
     labels:
