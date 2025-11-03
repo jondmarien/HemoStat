@@ -13,6 +13,7 @@ import docker
 from docker.errors import APIError, DockerException
 
 from agents.agent_base import HemoStatAgent
+from agents.platform_utils import get_docker_host
 
 
 class ContainerMonitor(HemoStatAgent):
@@ -34,10 +35,11 @@ class ContainerMonitor(HemoStatAgent):
         # Initialize base agent
         super().__init__(agent_name="monitor")
 
-        # Initialize Docker client
+        # Initialize Docker client with platform-aware socket detection
         try:
+            docker_host = os.getenv("DOCKER_HOST") or get_docker_host()
             self.docker_client = docker.from_env()
-            self.logger.info("Docker client initialized successfully")
+            self.logger.info(f"Docker client initialized successfully: {docker_host}")
         except DockerException as e:
             self.logger.error(f"Failed to initialize Docker client: {e}")
             raise

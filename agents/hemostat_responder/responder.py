@@ -15,6 +15,7 @@ import docker
 from docker.errors import APIError, DockerException, NotFound
 
 from agents.agent_base import HemoStatAgent
+from agents.platform_utils import get_docker_host
 
 
 class ContainerResponder(HemoStatAgent):
@@ -65,6 +66,9 @@ class ContainerResponder(HemoStatAgent):
         """
         Connect to Docker daemon with exponential backoff retry logic.
 
+        Uses platform-aware Docker socket detection. Automatically selects the
+        appropriate socket path for Windows (npipe), Linux, or macOS (unix socket).
+
         Returns:
             Connected Docker client instance
 
@@ -73,7 +77,7 @@ class ContainerResponder(HemoStatAgent):
         """
         max_retries = int(os.getenv("RESPONDER_RETRY_MAX", "3"))
         initial_delay = float(os.getenv("RESPONDER_RETRY_DELAY", "1"))
-        docker_host = os.getenv("DOCKER_HOST", "unix:///var/run/docker.sock")
+        docker_host = os.getenv("DOCKER_HOST") or get_docker_host()
 
         retry_delays = [initial_delay * (2**i) for i in range(max_retries)]
         last_error: DockerException | None = None

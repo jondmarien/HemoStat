@@ -17,6 +17,7 @@ import redis
 from dotenv import load_dotenv
 
 from agents.logger import HemoStatLogger
+from agents.platform_utils import get_platform_display
 
 # Load environment variables from .env file
 load_dotenv()
@@ -86,7 +87,7 @@ class HemoStatAgent:
         signal.signal(signal.SIGINT, self._handle_shutdown_signal)
 
         self.logger.info(
-            f"Agent '{self.agent_name}' initialized successfully",
+            f"Agent '{self.agent_name}' initialized successfully on {get_platform_display()}",
             extra={"agent": self.agent_name},
         )
 

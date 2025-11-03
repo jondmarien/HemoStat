@@ -126,38 +126,85 @@ All agents inherit from the shared `HemoStatAgent` base class, which provides Re
 
 ### Running Agents (Phase 2+) and Dashboard (Phase 3)
 
-All agents and dashboard are now available. Run them with:
+#### Local Development (Auto-Detected Platform)
+
+All agents and dashboard are available. The system automatically detects your OS and uses the appropriate Docker socket configuration.
 
 ```bash
 # Terminal 1: Start Monitor Agent
-python -m agents.hemostat_monitor.main
+uv run python -m agents.hemostat_monitor.main
 
 # Terminal 2: Start Analyzer Agent
-python -m agents.hemostat_analyzer.main
+uv run python -m agents.hemostat_analyzer.main
 
 # Terminal 3: Start Responder Agent
-python -m agents.hemostat_responder.main
+uv run python -m agents.hemostat_responder.main
 
 # Terminal 4: Start Alert Agent
-python -m agents.hemostat_alert.main
+uv run python -m agents.hemostat_alert.main
 
 # Terminal 5: Start Dashboard
-streamlit run dashboard/app.py
+uv run streamlit run dashboard/app.py
 # Access at http://localhost:8501
 ```
 
-Alternative: Run all services with Docker Compose (Recommended)
+#### Docker Compose (Recommended for Team Development)
+
+The system automatically detects your platform and configures Docker sockets appropriately.
+
+**On Windows (Docker Desktop):**
 
 ```bash
-# Start all services including monitor, analyzer, responder, alert, and dashboard
-docker-compose up -d
+# Start all services (auto-detects Windows named pipe)
+docker compose --env-file .env.docker.windows up -d
 
-# View logs for specific service
-docker-compose logs -f dashboard
-docker-compose logs -f alert
+# View logs
+docker compose logs -f dashboard
 
 # Access dashboard at http://localhost:8501
 ```
+
+**On Linux:**
+
+```bash
+# Start all services (auto-detects Linux Unix socket)
+docker compose --env-file .env.docker.linux up -d
+
+# View logs
+docker compose logs -f dashboard
+
+# Access dashboard at http://localhost:8501
+```
+
+**On macOS:**
+
+```bash
+# Start all services (auto-detects macOS Unix socket)
+docker compose --env-file .env.docker.macos up -d
+
+# View logs
+docker compose logs -f dashboard
+
+# Access dashboard at http://localhost:8501
+```
+
+**Stop all services:**
+
+```bash
+docker compose down
+```
+
+#### Platform Detection
+
+HemoStat automatically detects your operating system and configures the Docker daemon socket appropriately:
+
+- **Windows**: Uses `npipe:////./pipe/docker_engine` (Docker Desktop named pipe)
+- **Linux**: Uses `unix:///var/run/docker.sock` (Unix socket)
+- **macOS**: Uses `unix:///var/run/docker.sock` (Unix socket)
+
+When running inside Docker containers, the system uses `unix:///var/run/docker.sock` for all platforms (Docker Desktop on Windows maps the named pipe to this path inside containers).
+
+You can override the auto-detected socket by setting the `DOCKER_HOST` environment variable if needed.
 
 ## Project Structure
 

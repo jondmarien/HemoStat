@@ -5,8 +5,10 @@ plans/
 # Environment and Secrets
 # ============================================================================
 .env                      # Actual environment file with secrets
+.env.local                # Local development environment (auto-detected)
 *.env.local               # Local environment overrides
 .env.*.local              # Environment-specific local files
+.env.docker.*             # Docker-specific environment files (use as needed)
 
 # ============================================================================
 # Python & UV

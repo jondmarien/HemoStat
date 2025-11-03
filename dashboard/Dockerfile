@@ -4,6 +4,12 @@ FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
 
 WORKDIR /build
 
+# Install build dependencies for pyarrow and other compiled packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy project configuration
 COPY README.md pyproject.toml uv.lock* ./
 
@@ -12,7 +18,8 @@ COPY agents/ ./agents/
 COPY dashboard/ ./dashboard/
 
 # Install dependencies with UV (dashboard extra includes streamlit)
-RUN uv sync --extra dashboard --no-dev
+RUN uv sync --extra dashboard --no-dev && \
+    ls -la /build/.venv/bin/
 
 # Stage 2: Runtime - Minimal image with only runtime dependencies
 FROM python:3.11-slim-bookworm
