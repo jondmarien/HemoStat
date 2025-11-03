@@ -118,23 +118,33 @@ All agents inherit from the shared `HemoStatAgent` base class, which provides Re
 
 ### Running Agents (Phase 2+)
 
-Once agent implementations are added:
+Monitor Agent is now available. Run it with:
 
 ```bash
 # Terminal 1: Start Monitor Agent
 python -m agents.hemostat_monitor.main
 
-# Terminal 2: Start Analyzer Agent
-python -m agents.hemostat_analyzer.main
+# Terminal 2: Start Analyzer Agent (coming soon)
+# python -m agents.hemostat_analyzer.main
 
-# Terminal 3: Start Responder Agent
-python -m agents.hemostat_responder.main
+# Terminal 3: Start Responder Agent (coming soon)
+# python -m agents.hemostat_responder.main
 
-# Terminal 4: Start Alert Agent
-python -m agents.hemostat_alert.main
+# Terminal 4: Start Alert Agent (coming soon)
+# python -m agents.hemostat_alert.main
 
-# Terminal 5: Start Dashboard
-streamlit run dashboard/app.py
+# Terminal 5: Start Dashboard (coming soon)
+# streamlit run dashboard/app.py
+```
+
+Alternative: Run all services with Docker Compose
+
+```bash
+# Start all services including monitor
+docker-compose up -d
+
+# View monitor logs
+docker-compose logs -f monitor
 ```
 
 ## Project Structure
@@ -144,7 +154,7 @@ HemoStat-test/
 ├── agents/                          # Agent implementations
 │   ├── __init__.py
 │   ├── agent_base.py               # Base class for all agents
-│   ├── hemostat_monitor/           # Monitor agent (Phase 2)
+│   ├── hemostat_monitor/           # Monitor agent ✅
 │   ├── hemostat_analyzer/          # Analyzer agent (Phase 2)
 │   ├── hemostat_responder/         # Responder agent (Phase 2)
 │   └── hemostat_alert/             # Alert agent (Phase 2)
@@ -170,10 +180,10 @@ HemoStat-test/
 
 ### Phase 2: Agent Implementations (In Progress)
 
-- Monitor Agent: Container health polling
-- Analyzer Agent: AI-powered root cause analysis
-- Responder Agent: Safe remediation execution
-- Alert Agent: Multi-channel notifications
+- ✅ Monitor Agent: Container health polling
+- ⏳ Analyzer Agent: AI-powered root cause analysis (Next)
+- ⏳ Responder Agent: Safe remediation execution
+- ⏳ Alert Agent: Multi-channel notifications
 
 ### Phase 3: Dashboard & Visualization
 
@@ -210,4 +220,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*HemoStat is a Phase 1 infrastructure project for a multi-agent container health monitoring system.*
+*HemoStat is building a multi-agent container health monitoring system. Phase 1 infrastructure complete, Phase 2 Monitor Agent implemented.*

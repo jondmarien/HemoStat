@@ -17,16 +17,33 @@ services:
     networks:
       - hemostat-network
 
-  # Placeholder for Monitor Agent (Phase 2)
-  # monitor:
-  #   build:
-  #     context: .
-  #     dockerfile: agents/hemostat_monitor/Dockerfile
-  #   depends_on:
-  #     redis:
-  #       condition: service_healthy
-  #   networks:
-  #     - hemostat-network
+  # Monitor Agent - Continuously polls Docker containers for health issues
+  monitor:
+    container_name: hemostat-monitor
+    build:
+      context: .
+      dockerfile: agents/hemostat_monitor/Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      AGENT_POLL_INTERVAL: ${AGENT_POLL_INTERVAL:-30}
+      THRESHOLD_CPU_PERCENT: ${THRESHOLD_CPU_PERCENT:-85}
+      THRESHOLD_MEMORY_PERCENT: ${THRESHOLD_MEMORY_PERCENT:-80}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import redis; redis.Redis(host='redis').ping()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - hemostat-network
 
   # Placeholder for Analyzer Agent (Phase 2)
   # analyzer:
