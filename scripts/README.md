@@ -2,6 +2,17 @@
 
 Collection of scripts for demonstrating HemoStat's autonomous container health monitoring and remediation capabilities. These scripts are designed for hackathon demos, testing, and verification of the end-to-end agent workflow.
 
+## 🚀 Quick Start: Enable BuildKit (Recommended)
+
+**Enable Docker BuildKit for 95% faster rebuilds!**
+
+Choose your platform:
+- **Windows:** `.\scripts\windows\enable_buildkit.ps1`
+- **Linux:** `./scripts/linux/enable_buildkit.sh`
+- **macOS:** `./scripts/macos/enable_buildkit.zsh`
+
+See [BUILDKIT_SETUP.md](BUILDKIT_SETUP.md) for detailed instructions.
+
 ## Directory Structure
 
 Scripts are organized by platform for easier navigation:

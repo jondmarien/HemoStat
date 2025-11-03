@@ -9,8 +9,10 @@ WORKDIR /app
 # Copy dependency files
 COPY pyproject.toml ./
 
-# Install dependencies using UV (fast package manager)
-RUN uv pip install --system --no-cache \
+# Install metrics dependencies using system pip
+# BuildKit cache mount persists pip cache between builds for faster rebuilds
+RUN --mount=type=cache,target=/root/.cache/pip \
+    uv pip install --system \
     redis==7.0.1 \
     python-dotenv==1.2.1 \
     python-json-logger==4.0.0 \
@@ -28,7 +30,8 @@ COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/pytho
 # Copy application code
 COPY agents/ ./agents/
 
-# Set Python path
+# Set UV timeout for slow networks (HuggingFace dependencies can be large)
+ENV UV_HTTP_TIMEOUT=1000
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
