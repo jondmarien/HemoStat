@@ -476,6 +476,36 @@ All agents communicate via Redis pub/sub backbone, ensuring reliable message pas
 - **Video Demo**: Live presentation with pitch deck demonstrating the system in action
 - **Dashboard Screenshots**: See the Streamlit dashboard with real-time container health monitoring, metrics, and alert feeds
 
+**Image Gallery:**
+
+![HemoStat Title Slide](pitch-deck/Firefox-2025-11-03%20at%2005.50.46PM@2x.png)
+
+*HemoStat - Autonomous container health monitoring*
+
+![What is HemoStat?](pitch-deck/Firefox-2025-11-03%20at%2005.50.56PM@2x.png)
+
+*Real-time Monitoring • AI Root Cause Analysis • Safe Remediation*
+
+![Multi-agent Pipeline](pitch-deck/Firefox-2025-11-03%20at%2005.51.12PM@2x.png)
+
+*Monitor → Analyzer → Responder → Alert (Redis Backbone)*
+
+![Why HemoStat is a DevOps Project](pitch-deck/Firefox-2025-11-03%20at%2005.51.17PM@2x.png)
+
+*Fixes Itself • Saves Time • Clear Visibility • Works Everywhere*
+
+![Reduce MTTR, Prevent Alert Fatigue](pitch-deck/Firefox-2025-11-03%20at%2005.51.21PM@2x.png)
+
+*Smart Filtering • Safe Automation • Full Visibility • Cross-Platform*
+
+![Our Approach](pitch-deck/Firefox-2025-11-03%20at%2005.51.25PM@2x.png)
+
+*Autonomous Monitoring • AI-Powered Analysis • Safe Remediation • Seamless Integration*
+
+![HemoStat Dashboard Demo](pitch-deck/Firefox-2025-11-03%20at%2005.51.30PM@2x.png)
+
+*Live dashboard showing container health monitoring with real-time metrics and Slack alerts*
+
 **Created By:**
 - **Team Lead**: Jonathan Marien
 - **Team Members**: Imran Yafith, Adam Shaldam, Seyon Sri, Audrey Man
