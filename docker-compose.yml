@@ -223,7 +223,7 @@ services:
     container_name: hemostat-grafana
     image: grafana/grafana:latest
     ports:
-      - "3001:3000"
+      - "3001:3001"
     volumes:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana-data:/var/lib/grafana
