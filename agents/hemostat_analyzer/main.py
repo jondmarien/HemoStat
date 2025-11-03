@@ -6,6 +6,7 @@ Usage: python -m agents.hemostat_analyzer.main
 
 Import paths supported:
 - from agents.hemostat_analyzer import HealthAnalyzer (package-level)
+- from agents.hemostat_analyzer.hemostat_analyzer import HealthAnalyzer (primary module)
 - from agents.hemostat_analyzer.analyzer import HealthAnalyzer (implementation module)
 """
 

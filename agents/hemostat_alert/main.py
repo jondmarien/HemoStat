@@ -1,3 +1,15 @@
+"""
+HemoStat Alert Agent Entry Point
+
+Runs the Alert Agent as a standalone module.
+Usage: python -m agents.hemostat_alert.main
+
+Import paths supported:
+- from agents.hemostat_alert import AlertNotifier (package-level)
+- from agents.hemostat_alert.hemostat_alert import AlertNotifier (primary module)
+- from agents.hemostat_alert.alert import AlertNotifier (implementation module)
+"""
+
 import logging
 import os
 import sys
@@ -12,9 +24,6 @@ except ImportError:
     requests = None
 
 
-logger = logging.getLogger(__name__)
-
-
 def main():
     """Main entry point for Alert Agent."""
     load_dotenv()
@@ -25,6 +34,7 @@ def main():
         level=log_level,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
+    logger = logging.getLogger("hemostat.alert")
 
     logger.info("=" * 80)
     logger.info("HemoStat Alert Agent Starting")

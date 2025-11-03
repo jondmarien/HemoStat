@@ -1,3 +1,9 @@
-from agents.hemostat_responder.responder import ContainerResponder
+"""
+HemoStat Responder Agent Package
+
+Provides the ContainerResponder class for safe container remediation with safety constraints.
+"""
+
+from .hemostat_responder import ContainerResponder
 
 __all__ = ["ContainerResponder"]

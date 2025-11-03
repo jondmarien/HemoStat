@@ -1,8 +1,13 @@
 """
-HemoStat Responder Agent - Entry Point
+HemoStat Responder Agent Entry Point
 
-Starts the Responder Agent for safe container remediation with comprehensive
-safety constraints and audit logging.
+Runs the Responder Agent as a standalone module.
+Usage: python -m agents.hemostat_responder.main
+
+Import paths supported:
+- from agents.hemostat_responder import ContainerResponder (package-level)
+- from agents.hemostat_responder.hemostat_responder import ContainerResponder (primary module)
+- from agents.hemostat_responder.responder import ContainerResponder (implementation module)
 """
 
 import logging
