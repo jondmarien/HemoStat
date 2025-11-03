@@ -110,14 +110,6 @@ Issues = "https://github.com/jondmarien/HemoStat/issues"
 [tool.uv]
 # UV configuration for fast Python package management
 managed = true
-dev-dependencies = [
-    "pytest==8.4.2",
-    "pytest-asyncio==1.2.0",
-    "pytest-cov==7.0.0",
-    "ruff==0.5.3",
-    "pre-commit==4.0.1",
-    "ty==0.0.1a25",
-]
 
 [tool.hatch.build.targets.wheel]
 packages = ["agents"]
