@@ -105,16 +105,33 @@ services:
     networks:
       - hemostat-network
 
-  # Placeholder for Alert Agent (Phase 2)
-  # alert:
-  #   build:
-  #     context: .
-  #     dockerfile: agents/hemostat_alert/Dockerfile
-  #   depends_on:
-  #     redis:
-  #       condition: service_healthy
-  #   networks:
-  #     - hemostat-network
+  # Alert Agent - Sends notifications and stores events for dashboard
+  alert:
+    container_name: hemostat-alert
+    build:
+      context: .
+      dockerfile: agents/hemostat_alert/Dockerfile
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
+      ALERT_ENABLED: ${ALERT_ENABLED:-true}
+      ALERT_EVENT_TTL: ${ALERT_EVENT_TTL:-3600}
+      ALERT_MAX_EVENTS: ${ALERT_MAX_EVENTS:-100}
+      ALERT_DEDUPE_TTL: ${ALERT_DEDUPE_TTL:-60}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import redis; redis.Redis(host='redis').ping()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - hemostat-network
 
   # Placeholder for Dashboard (Phase 3)
   # dashboard:
