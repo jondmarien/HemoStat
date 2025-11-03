@@ -50,6 +50,7 @@ autodoc_mock_imports = [
     'docker',
     'redis',
     'streamlit',
+    'pandas',
     'langchain',
     'langchain_openai',
     'langchain_anthropic',
