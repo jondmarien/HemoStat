@@ -39,14 +39,14 @@ dependencies = [
 [project.optional-dependencies]
 # Phase 2 - Agent Implementations
 agents = [
-    "docker==7.1.0",              # Monitor/Responder agents for container management
-    "langchain==1.0.3",           # LLM orchestration for Analyzer agent
-    "langchain-openai==1.0.1",    # OpenAI provider integration for LangChain
-    "langchain-anthropic==1.0.1", # Anthropic provider integration for LangChain
+    "docker==7.1.0",                # Monitor/Responder agents for container management
+    "langchain==1.0.3",             # LLM orchestration for Analyzer agent
+    "langchain-openai==1.0.1",      # OpenAI provider integration for LangChain
+    "langchain-anthropic==1.0.1",   # Anthropic provider integration for LangChain
     "langchain-huggingface>=0.1.0", # Hugging Face provider integration for LangChain
-    "openai==2.6.1",              # OpenAI GPT-4 integration
-    "anthropic>=0.72.0",          # Anthropic Claude integration (compatible with langchain-anthropic)
-    "requests==2.32.5",           # HTTP client for Alert agent (Slack webhooks)
+    "openai==2.6.1",                # OpenAI GPT-4 integration
+    "anthropic>=0.72.0",            # Anthropic Claude integration (compatible with langchain-anthropic)
+    "requests==2.32.5",             # HTTP client for Alert agent (Slack webhooks)
 ]
 
 # Phase 3 - Dashboard
@@ -62,6 +62,16 @@ dev = [
     "ruff==0.5.3",           # Fast Python linter and formatter
     "ty==0.0.1a25",          # Fast type checker from Astral (written in Rust)
     "pre-commit==4.0.1",     # Git hooks for code quality
+]
+
+# Documentation generation
+docs = [
+    "sphinx>=7.2.0",                    # Core documentation generator with autodoc support
+    "sphinx-autodoc-typehints>=1.25.0", # Better type hint rendering in API docs
+    "sphinx-rtd-theme>=2.0.0",          # Official ReadTheDocs theme
+    "myst-parser>=2.0.0",               # Markdown support for Sphinx
+    "sphinx-copybutton>=0.5.0",         # Copy button for code blocks
+    "sphinxcontrib-mermaid>=0.9.0",     # Mermaid diagram support
 ]
 
 # All optional dependencies
@@ -81,11 +91,17 @@ all = [
     "ruff==0.5.3",
     "ty==0.0.1a25",
     "pre-commit==4.0.1",
+    "sphinx>=7.2.0",
+    "sphinx-autodoc-typehints>=1.25.0",
+    "sphinx-rtd-theme>=2.0.0",
+    "myst-parser>=2.0.0",
+    "sphinx-copybutton>=0.5.0",
+    "sphinxcontrib-mermaid>=0.9.0",
 ]
 
 [project.urls]
 Homepage = "https://github.com/jondmarien/HemoStat"
-Documentation = "https://github.com/jondmarien/HemoStat/wiki"
+Documentation = "https://quartz.chron0.tech/HemoStat/"
 Repository = "https://github.com/jondmarien/HemoStat.git"
 Issues = "https://github.com/jondmarien/HemoStat/issues"
 

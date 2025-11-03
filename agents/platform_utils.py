@@ -35,6 +35,7 @@ def get_docker_host() -> str:
     Get the appropriate Docker daemon socket path for the current platform.
 
     Logic:
+
     - If running in Docker container: always use unix:///var/run/docker.sock
       (Docker Desktop on Windows maps the named pipe to this path inside containers)
     - If running locally on Windows: use npipe:////./pipe/docker_engine

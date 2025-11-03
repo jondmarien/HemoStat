@@ -11,6 +11,33 @@ HemoStat is a multi-agent system that autonomously monitors, analyzes, and remed
 - **Live Dashboard**: Streamlit-based monitoring interface
 - **Demo Scripts**: Automated scenarios for testing and hackathon presentations
 
+## Documentation
+
+Comprehensive documentation is available at **[https://quartz.chron0.tech/HemoStat/](https://quartz.chron0.tech/HemoStat/)**
+
+The documentation includes:
+
+- **Getting Started** - Installation and quickstart guide
+- **Architecture** - System design and agent communication
+- **API Reference** - **Auto-generated from code docstrings** (all classes, methods, parameters)
+- **Deployment** - Production deployment guides
+- **Troubleshooting** - Common issues and solutions
+- **Development** - Contributing and code quality
+
+### Building Docs Locally
+
+```bash
+# Install documentation dependencies
+make docs-install
+# or: uv sync --extra docs
+
+# Build and serve locally
+make docs-serve
+# or: sphinx-build -b html docs/source docs && python -m http.server -d docs 8000
+
+# View at http://localhost:8000
+```
+
 ## Tech Stack
 
 - **Python 3.11+**: Core language
@@ -18,6 +45,7 @@ HemoStat is a multi-agent system that autonomously monitors, analyzes, and remed
 - **Docker & Docker Compose**: Container orchestration
 - **LangChain**: LLM orchestration for AI analysis
 - **Streamlit**: Web-based dashboard
+- **Sphinx**: Documentation generation with autodoc from docstrings
 
 ## Architecture
 
@@ -389,12 +417,17 @@ HemoStat-test/
 - ⏳ Performance profiling
 - ⏳ Production deployment guide
 
-## Documentation
+## Documentation Links
 
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Detailed system design and data flow (Phase 2)
-- **[API_PROTOCOL.md](docs/API_PROTOCOL.md)** - Redis channel schemas and event formats (Phase 2)
-- **[DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Production deployment guide (Phase 3)
-- **[TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** - Common issues and solutions (Phase 3)
+**Live Documentation:** [https://quartz.chron0.tech/HemoStat/](https://quartz.chron0.tech/HemoStat/)
+
+- **[Getting Started](https://quartz.chron0.tech/HemoStat/quickstart.html)** - Installation and quickstart guide
+- **[Architecture](https://quartz.chron0.tech/HemoStat/architecture.html)** - Detailed system design and data flow ([source](docs/ARCHITECTURE.md))
+- **[API Reference](https://quartz.chron0.tech/HemoStat/api/index.html)** - Auto-generated from code docstrings
+- **[API Protocol](https://quartz.chron0.tech/HemoStat/api_protocol.html)** - Redis channel schemas and event formats ([source](docs/API_PROTOCOL.md))
+- **[Deployment](https://quartz.chron0.tech/HemoStat/deployment.html)** - Production deployment guide ([source](docs/DEPLOYMENT.md))
+- **[Troubleshooting](https://quartz.chron0.tech/HemoStat/troubleshooting.html)** - Common issues and solutions ([source](docs/TROUBLESHOOTING.md))
+- **[Development](https://quartz.chron0.tech/HemoStat/development.html)** - Contributing and code quality ([source](docs/WARP.md))
 
 ## License
 

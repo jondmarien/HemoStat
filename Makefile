@@ -1,4 +1,4 @@
-.PHONY: help install dev format lint typecheck quality test clean docker-up docker-down docker-logs
+.PHONY: help install dev format lint typecheck quality test clean docker-up docker-down docker-logs docs-install docs-build docs-clean docs-serve docs-check docs
 
 help:
 	@echo "HemoStat Development Commands"
@@ -30,6 +30,14 @@ help:
 	@echo "  make analyzer         Run Analyzer Agent locally"
 	@echo "  make responder        Run Responder Agent locally"
 	@echo "  make alert            Run Alert Agent locally"
+	@echo ""
+	@echo "Documentation:"
+	@echo "  make docs-install     Install documentation dependencies"
+	@echo "  make docs-build       Build Sphinx documentation into /docs"
+	@echo "  make docs-clean       Clean documentation build artifacts"
+	@echo "  make docs-serve       Build and serve documentation locally"
+	@echo "  make docs-check       Build docs with warnings as errors"
+	@echo "  make docs             Alias for docs-build"
 	@echo ""
 	@echo "Maintenance:"
 	@echo "  make clean            Remove build artifacts and cache"
@@ -96,6 +104,24 @@ responder:
 
 alert:
 	python -m agents.hemostat_alert.main
+
+# Documentation
+docs-install:
+	uv sync --extra docs
+
+docs-build:
+	sphinx-build -b html docs/source docs
+
+docs-clean:
+	rm -rf docs/*.html docs/*.js docs/_static docs/_sources docs/_modules docs/.buildinfo docs/objects.inv docs/searchindex.js docs/source/_autosummary
+
+docs-serve: docs-build
+	python -m http.server -d docs 8000
+
+docs-check:
+	sphinx-build -b html docs/source docs -W --keep-going
+
+docs: docs-build
 
 # Maintenance
 clean:

@@ -57,10 +57,22 @@ docker-compose.override.yml
 # Logs
 # ============================================================================
 *.log
-logs/                     
 
 # ============================================================================
 # Redis
 # ============================================================================
-dump.rdb                  
-appendonly.aof
+dump.rdb
+
+# ============================================================================
+# Documentation Build Artifacts (keep source, ignore generated HTML)
+# ============================================================================
+docs/*.html              
+docs/*.js                
+docs/_static/            
+docs/_sources/           
+docs/_modules/           
+docs/.buildinfo          
+docs/objects.inv         
+docs/searchindex.js      
+docs/source/_autosummary/ 
+.doctrees/               
