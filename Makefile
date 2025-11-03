@@ -96,7 +96,7 @@ docker-build:
 	docker-compose build
 
 docker-up:
-	docker-compose up -d
+	docker-compose up -d --remove-orphans
 	@echo "✓ Services started"
 	@echo "  Monitor:   docker-compose logs -f monitor"
 	@echo "  Analyzer:  docker-compose logs -f analyzer"
@@ -104,7 +104,7 @@ docker-up:
 	@echo "  Alert:     docker-compose logs -f alert"
 
 docker-down:
-	docker-compose down
+	docker-compose down --remove-orphans
 
 docker-logs:
 	docker-compose logs -f
@@ -124,17 +124,17 @@ windows-build:
 	docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows build
 
 windows-up:
-	docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows up -d
+	docker compose -f docker-compose.yml -f docker-compose.windows.yml --env-file .env.docker.windows up -d --remove-orphans
 	@echo "✓ Windows services started"
 
 windows-down:
-	docker compose -f docker-compose.yml -f docker-compose.windows.yml down
+	docker compose -f docker-compose.yml -f docker-compose.windows.yml down --remove-orphans
 
 windows-logs:
 	docker compose -f docker-compose.yml -f docker-compose.windows.yml logs -f
 
 windows-test:
-	docker compose -f docker-compose.yml -f docker-compose.windows.yml -f docker-compose.test.yml --env-file .env.docker.windows up -d
+	docker compose -f docker-compose.yml -f docker-compose.windows.yml -f docker-compose.test.yml --env-file .env.docker.windows up -d --remove-orphans
 	@echo "✓ Windows services + test containers started"
 	@echo "  Dashboard: http://localhost:8501"
 	@echo "  Test containers: test-crash-loop, test-cpu-stress, test-memory-stress, etc."
@@ -150,17 +150,17 @@ linux-build:
 	docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux build
 
 linux-up:
-	docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux up -d
+	docker compose -f docker-compose.yml -f docker-compose.linux.yml --env-file .env.docker.linux up -d --remove-orphans
 	@echo "✓ Linux services started"
 
 linux-down:
-	docker compose -f docker-compose.yml -f docker-compose.linux.yml down
+	docker compose -f docker-compose.yml -f docker-compose.linux.yml down --remove-orphans
 
 linux-logs:
 	docker compose -f docker-compose.yml -f docker-compose.linux.yml logs -f
 
 linux-test:
-	docker compose -f docker-compose.yml -f docker-compose.linux.yml -f docker-compose.test.yml --env-file .env.docker.linux up -d
+	docker compose -f docker-compose.yml -f docker-compose.linux.yml -f docker-compose.test.yml --env-file .env.docker.linux up -d --remove-orphans
 	@echo "✓ Linux services + test containers started"
 	@echo "  Dashboard: http://localhost:8501"
 	@echo "  Test containers: test-crash-loop, test-cpu-stress, test-memory-stress, etc."
@@ -176,17 +176,17 @@ macos-build:
 	docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos build
 
 macos-up:
-	docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos up -d
+	docker compose -f docker-compose.yml -f docker-compose.macos.yml --env-file .env.docker.macos up -d --remove-orphans
 	@echo "✓ macOS services started"
 
 macos-down:
-	docker compose -f docker-compose.yml -f docker-compose.macos.yml down
+	docker compose -f docker-compose.yml -f docker-compose.macos.yml down --remove-orphans
 
 macos-logs:
 	docker compose -f docker-compose.yml -f docker-compose.macos.yml logs -f
 
 macos-test:
-	docker compose -f docker-compose.yml -f docker-compose.macos.yml -f docker-compose.test.yml --env-file .env.docker.macos up -d
+	docker compose -f docker-compose.yml -f docker-compose.macos.yml -f docker-compose.test.yml --env-file .env.docker.macos up -d --remove-orphans
 	@echo "✓ macOS services + test containers started"
 	@echo "  Dashboard: http://localhost:8501"
 	@echo "  Test containers: test-crash-loop, test-cpu-stress, test-memory-stress, etc."

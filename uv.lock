@@ -489,16 +489,6 @@ docs = [
     { name = "sphinxcontrib-mermaid" },
 ]
 
-[package.dev-dependencies]
-dev = [
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-    { name = "ty" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "anthropic", marker = "extra == 'agents'", specifier = ">=0.72.0" },
@@ -550,16 +540,6 @@ requires-dist = [
     { name = "ty", marker = "extra == 'dev'", specifier = "==0.0.1a25" },
 ]
 provides-extras = ["agents", "dashboard", "dev", "docs", "all"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pre-commit", specifier = "==4.0.1" },
-    { name = "pytest", specifier = "==8.4.2" },
-    { name = "pytest-asyncio", specifier = "==1.2.0" },
-    { name = "pytest-cov", specifier = "==7.0.0" },
-    { name = "ruff", specifier = "==0.5.3" },
-    { name = "ty", specifier = "==0.0.1a25" },
-]
 
 [[package]]
 name = "hf-xet"
