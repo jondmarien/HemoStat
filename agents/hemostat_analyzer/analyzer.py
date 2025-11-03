@@ -68,8 +68,7 @@ class HealthAnalyzer(HemoStatAgent):
             if self.ai_model.startswith("gpt"):
                 from langchain_openai import ChatOpenAI
 
-                api_key = os.getenv("OPENAI_API_KEY", "").strip()
-                if not api_key:
+                if not os.getenv("OPENAI_API_KEY", "").strip():
                     self.logger.warning(
                         "OPENAI_API_KEY not set; AI analysis disabled (using rule-based fallback)"
                     )
@@ -77,16 +76,14 @@ class HealthAnalyzer(HemoStatAgent):
 
                 self.logger.info(f"Initializing ChatOpenAI with model: {self.ai_model}")
                 return ChatOpenAI(
-                    model=self.ai_model,
+                    model=self.ai_model,  # type: ignore[arg-type]
                     temperature=0.3,
-                    api_key=api_key,
                 )
 
             elif self.ai_model.startswith("claude"):
                 from langchain_anthropic import ChatAnthropic
 
-                api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
-                if not api_key:
+                if not os.getenv("ANTHROPIC_API_KEY", "").strip():
                     self.logger.warning(
                         "ANTHROPIC_API_KEY not set; AI analysis disabled (using rule-based fallback)"
                     )
@@ -94,9 +91,8 @@ class HealthAnalyzer(HemoStatAgent):
 
                 self.logger.info(f"Initializing ChatAnthropic with model: {self.ai_model}")
                 return ChatAnthropic(
-                    model=self.ai_model,
+                    model=self.ai_model,  # type: ignore[arg-type]
                     temperature=0.3,
-                    api_key=api_key,
                 )
 
             else:
