@@ -1,11 +1,11 @@
 # Multi-stage build for HemoStat Dashboard using UV
 # Stage 1: Builder - Install dependencies with UV
-FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim as builder
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
 
 WORKDIR /build
 
 # Copy project configuration
-COPY pyproject.toml uv.lock* ./
+COPY README.md pyproject.toml uv.lock* ./
 
 # Copy source code
 COPY agents/ ./agents/
@@ -41,9 +41,9 @@ RUN useradd -m -u 1000 hemostat && \
 # Switch to non-root user
 USER hemostat
 
-# Health check
+# Health check using Python stdlib (curl not available in slim image)
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=10s \
-    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')" || exit 1
 
 # Run Streamlit dashboard
 ENTRYPOINT ["streamlit", "run", "dashboard/app.py", \

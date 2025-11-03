@@ -1,6 +1,6 @@
 # Multi-stage build for HemoStat Monitor Agent using UV
 # Stage 1: Builder - Install dependencies with UV
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 WORKDIR /build
 
@@ -8,7 +8,7 @@ WORKDIR /build
 RUN pip install --no-cache-dir uv
 
 # Copy project files
-COPY pyproject.toml uv.lock ./
+COPY README.md pyproject.toml uv.lock ./
 COPY agents/ ./agents/
 
 # Install dependencies using UV with agents extra group

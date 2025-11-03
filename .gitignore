@@ -12,6 +12,10 @@ plans/
 # Python & UV
 # ============================================================================
 __pycache__/              # Python cache directories
+# Agent-specific cache
+agents/**/__pycache__/
+agents/*/__pycache__/
+dashboard/__pycache__/
 *.py[cod]                 # Python compiled files (.pyc, .pyo, .pyd)
 *$py.class                # Python class files
 *.so                      # C extensions

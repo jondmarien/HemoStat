@@ -161,18 +161,18 @@ class ContainerMonitor(HemoStatAgent):
             memory_percent = self._calculate_memory_percent(memory_stats)
 
             # Extract network I/O stats
-            networks = stats.get("networks", {})
+            networks = stats.get("networks") or {}
             network_rx_bytes = 0
             network_tx_bytes = 0
-            for net_data in networks.values():
+            for net_data in networks.values() if networks else []:
                 network_rx_bytes += net_data.get("rx_bytes", 0)
                 network_tx_bytes += net_data.get("tx_bytes", 0)
 
             # Extract block I/O stats
-            blkio_stats = stats.get("blkio_stats", {})
+            blkio_stats = stats.get("blkio_stats") or {}
             blkio_read_bytes = 0
             blkio_write_bytes = 0
-            for stat in blkio_stats.get("io_service_bytes_recursive", []):
+            for stat in (blkio_stats.get("io_service_bytes_recursive") or []):
                 if stat.get("op") == "Read":
                     blkio_read_bytes += stat.get("value", 0)
                 elif stat.get("op") == "Write":

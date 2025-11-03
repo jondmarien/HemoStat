@@ -11,6 +11,7 @@ from typing import Any
 import streamlit as st
 
 from agents.logger import HemoStatLogger
+from dashboard.data_fetcher import get_all_container_stats
 
 
 def render_metrics_cards(
@@ -74,7 +75,8 @@ def render_health_grid(events: list[dict]) -> None:
     Render container health status in a grid layout.
 
     Displays a table of containers with their latest status, CPU/memory
-    percentages, and last update timestamp. Uses color coding for status
+    percentages from `hemostat:stats:*` keys (preferred) or event data (fallback),
+    and last update timestamp. Uses color coding for status
     (green=healthy, red=unhealthy, blue=remediated).
 
     Args:
@@ -95,16 +97,26 @@ def render_health_grid(events: list[dict]) -> None:
         st.info("No container data available")
         return
 
+    # Fetch container stats from hemostat:stats:* keys
+    all_stats = get_all_container_stats()
+
     # Build dataframe for display
     grid_data = []
     for container_id, event in containers_map.items():
+        # Prefer stats from hemostat:stats:*, fall back to event data
+        stats = all_stats.get(container_id, {})
+        cpu_percent = stats.get("cpu_percent", event.get("cpu_percent", 0))
+        memory_percent = stats.get("memory_percent", event.get("memory_percent", 0))
+        status = stats.get("status", event.get("status", "unknown")).upper()
+        timestamp = stats.get("timestamp", event.get("timestamp", ""))
+
         grid_data.append(
             {
                 "Container": container_id,
-                "Status": event.get("status", "unknown").upper(),
-                "CPU %": f"{event.get('cpu_percent', 0):.1f}",
-                "Memory %": f"{event.get('memory_percent', 0):.1f}",
-                "Last Update": format_timestamp(event.get("timestamp", "")),
+                "Status": status,
+                "CPU %": f"{cpu_percent:.1f}",
+                "Memory %": f"{memory_percent:.1f}",
+                "Last Update": format_timestamp(timestamp),
             }
         )
 
@@ -266,7 +278,7 @@ def render_remediation_history(events: list[dict]) -> None:
     )
 
 
-def render_timeline(events: list[dict]) -> None:
+def render_timeline(events: list[dict], max_events: int = 100) -> None:
     """
     Render chronological timeline of all events.
 
@@ -275,6 +287,7 @@ def render_timeline(events: list[dict]) -> None:
 
     Args:
         events: List of event dictionaries from Redis
+        max_events: Maximum number of events to display (default: 100)
     """
     if not events:
         st.info("No events to display")
@@ -283,7 +296,7 @@ def render_timeline(events: list[dict]) -> None:
     # Sort by timestamp, newest first
     sorted_events = sorted(events, key=lambda x: x.get("timestamp", ""), reverse=True)
 
-    for event in sorted_events[:100]:  # Limit to 100 most recent
+    for event in sorted_events[:max_events]:
         event_type = event.get("event_type", "unknown").lower()
         container_id = event.get("container_id", "Unknown")
         timestamp = format_timestamp(event.get("timestamp", ""))

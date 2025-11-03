@@ -45,9 +45,12 @@ st.set_page_config(
 
 # Initialize session state
 if "auto_refresh_enabled" not in st.session_state:
-    st.session_state.auto_refresh_enabled = True
+    auto_refresh_env = os.getenv("DASHBOARD_AUTO_REFRESH", "true").lower() == "true"
+    st.session_state.auto_refresh_enabled = auto_refresh_env
 if "refresh_interval" not in st.session_state:
     st.session_state.refresh_interval = int(os.getenv("DASHBOARD_REFRESH_INTERVAL", 5))
+if "max_events" not in st.session_state:
+    st.session_state.max_events = int(os.getenv("DASHBOARD_MAX_EVENTS", 100))
 if "last_refresh" not in st.session_state:
     st.session_state.last_refresh = None
 
@@ -86,8 +89,7 @@ def render_sidebar() -> None:
     if st.session_state.last_refresh:
         st.sidebar.write(f"**Last Refresh**: {st.session_state.last_refresh.strftime('%H:%M:%S')}")
 
-    refresh_interval = int(os.getenv("DASHBOARD_REFRESH_INTERVAL", 5))
-    st.sidebar.write(f"**Refresh Interval**: {refresh_interval}s")
+    st.sidebar.write(f"**Refresh Interval**: {st.session_state.refresh_interval}s")
 
     # Manual refresh button
     if st.sidebar.button("🔄 Refresh Now", use_container_width=True):
@@ -141,57 +143,64 @@ def render_header() -> None:
         st.error("❌ Cannot connect to Redis")
 
 
-@st.fragment(run_every=5)  # type: ignore[attr-defined]
 def render_live_content() -> None:
     """
     Render auto-refreshing dashboard content.
 
-    This fragment updates every 5 seconds when auto-refresh is enabled.
+    Uses st.fragment with dynamic run_every interval tied to session state.
     Fetches data from Redis and renders all dashboard tabs.
     """
-    if not st.session_state.auto_refresh_enabled:
-        st.info("Auto-refresh is disabled. Click 'Refresh Now' to update.")
-        return
 
-    st.session_state.last_refresh = datetime.now()
+    # Create fragment with dynamic refresh interval
+    @st.fragment(run_every=st.session_state.refresh_interval)  # type: ignore[attr-defined]
+    def content_fragment() -> None:
+        if not st.session_state.auto_refresh_enabled:
+            st.info("Auto-refresh is disabled. Click 'Refresh Now' to update.")
+            return
 
-    try:
-        # Fetch data
-        with st.spinner("Loading data from Redis..."):
-            all_events = get_all_events(limit=100)
-            remediation_events = get_events_by_type("remediation_complete", limit=100)
-            false_alarm_count = get_false_alarm_count()
-            active_containers = len(get_active_containers())
-            remediation_stats = get_remediation_stats()
+        st.session_state.last_refresh = datetime.now()
 
-        # Metrics section
-        st.subheader("Key Metrics")
-        render_metrics_cards(remediation_stats, false_alarm_count, active_containers)
+        try:
+            # Fetch data
+            with st.spinner("Loading data from Redis..."):
+                all_events = get_all_events(limit=st.session_state.max_events)
+                remediation_events = get_events_by_type(
+                    "remediation_complete", limit=st.session_state.max_events
+                )
+                false_alarm_count = get_false_alarm_count()
+                active_containers = len(get_active_containers())
+                remediation_stats = get_remediation_stats()
 
-        # Tabs for different views
-        tab1, tab2, tab3, tab4 = st.tabs(
-            ["🏥 Health Grid", "⚠️ Active Issues", "📊 History", "📈 Timeline"]
-        )
+            # Metrics section
+            st.subheader("Key Metrics")
+            render_metrics_cards(remediation_stats, false_alarm_count, active_containers)
 
-        with tab1:
-            st.subheader("Container Health Grid")
-            render_health_grid(all_events)
+            # Tabs for different views
+            tab1, tab2, tab3, tab4 = st.tabs(
+                ["🏥 Health Grid", "⚠️ Active Issues", "📊 History", "📈 Timeline"]
+            )
 
-        with tab2:
-            st.subheader("Active Issues")
-            render_active_issues(all_events)
+            with tab1:
+                st.subheader("Container Health Grid")
+                render_health_grid(all_events)
 
-        with tab3:
-            st.subheader("Remediation History")
-            render_remediation_history(remediation_events)
+            with tab2:
+                st.subheader("Active Issues")
+                render_active_issues(all_events)
 
-        with tab4:
-            st.subheader("Event Timeline")
-            render_timeline(all_events)
+            with tab3:
+                st.subheader("Remediation History")
+                render_remediation_history(remediation_events)
 
-    except Exception as e:
-        logger.error(f"Error rendering dashboard content: {e}")
-        st.error(f"Error loading dashboard data: {e}")
+            with tab4:
+                st.subheader("Event Timeline")
+                render_timeline(all_events, max_events=st.session_state.max_events)
+
+        except Exception as e:
+            logger.error(f"Error rendering dashboard content: {e}")
+            st.error(f"Error loading dashboard data: {e}")
+
+    content_fragment()
 
 
 def render_footer() -> None:
