@@ -38,7 +38,7 @@ logger = HemoStatLogger.get_logger("dashboard")
 # Page configuration
 st.set_page_config(
     page_title="HemoStat Dashboard",
-    page_icon="🏥",
+    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -78,12 +78,12 @@ def render_sidebar() -> None:
     Displays Redis connection status, refresh controls, settings, and
     helpful links to documentation and repositories.
     """
-    st.sidebar.title("🏥 HemoStat")
+    st.sidebar.title("HemoStat")
 
     # System status section
     st.sidebar.subheader("System Status")
     redis_connected = check_redis_connection()
-    status_indicator = "🟢 Connected" if redis_connected else "🔴 Disconnected"
+    status_indicator = "Connected" if redis_connected else "Disconnected"
     st.sidebar.write(f"**Redis**: {status_indicator}")
 
     if st.session_state.last_refresh:
@@ -92,7 +92,8 @@ def render_sidebar() -> None:
     st.sidebar.write(f"**Refresh Interval**: {st.session_state.refresh_interval}s")
 
     # Manual refresh button
-    if st.sidebar.button("🔄 Refresh Now", use_container_width=True):
+    if st.sidebar.button("Refresh Now", use_container_width=True):
+        st.session_state.last_refresh = datetime.now()
         st.rerun()
 
     # Settings section
@@ -118,9 +119,9 @@ def render_sidebar() -> None:
     st.sidebar.subheader("Resources")
     st.sidebar.markdown(
         """
-    - [📖 Documentation](https://github.com/jondmarien/HemoStat-test)
-    - [🐙 GitHub Repository](https://github.com/jondmarien/HemoStat-test)
-    - [📋 API Protocol](./docs/API_PROTOCOL.md)
+    - [Documentation](https://github.com/jondmarien/HemoStat)
+    - [GitHub Repository](https://github.com/jondmarien/HemoStat)
+    - [API Protocol](./docs/API_PROTOCOL.md)
     """
     )
 
@@ -132,15 +133,15 @@ def render_header() -> None:
     Displays main title, subtitle with current timestamp, and
     connection status indicator.
     """
-    st.title("🏥 HemoStat: Container Health Monitoring")
+    st.title("HemoStat: Container Health Monitoring")
     st.markdown(f"Real-time monitoring dashboard | {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # Connection status
     redis_connected = check_redis_connection()
     if redis_connected:
-        st.success("✅ Connected to Redis")
+        st.success("Connected to Redis")
     else:
-        st.error("❌ Cannot connect to Redis")
+        st.error("Cannot connect to Redis")
 
 
 def render_live_content() -> None:
@@ -151,56 +152,66 @@ def render_live_content() -> None:
     Fetches data from Redis and renders all dashboard tabs.
     """
 
-    # Create fragment with dynamic refresh interval
-    @st.fragment(run_every=st.session_state.refresh_interval)  # type: ignore[attr-defined]
-    def content_fragment() -> None:
-        if not st.session_state.auto_refresh_enabled:
-            st.info("Auto-refresh is disabled. Click 'Refresh Now' to update.")
-            return
-
-        st.session_state.last_refresh = datetime.now()
-
-        try:
-            # Fetch data
-            with st.spinner("Loading data from Redis..."):
-                all_events = get_all_events(limit=st.session_state.max_events)
-                remediation_events = get_events_by_type(
-                    "remediation_complete", limit=st.session_state.max_events
-                )
-                false_alarm_count = get_false_alarm_count()
-                active_containers = len(get_active_containers())
-                remediation_stats = get_remediation_stats()
-
-            # Metrics section
-            st.subheader("Key Metrics")
-            render_metrics_cards(remediation_stats, false_alarm_count, active_containers)
-
-            # Tabs for different views
-            tab1, tab2, tab3, tab4 = st.tabs(
-                ["🏥 Health Grid", "⚠️ Active Issues", "📊 History", "📈 Timeline"]
-            )
-
-            with tab1:
-                st.subheader("Container Health Grid")
-                render_health_grid(all_events)
-
-            with tab2:
-                st.subheader("Active Issues")
-                render_active_issues(all_events)
-
-            with tab3:
-                st.subheader("Remediation History")
-                render_remediation_history(remediation_events)
-
-            with tab4:
-                st.subheader("Event Timeline")
-                render_timeline(all_events, max_events=st.session_state.max_events)
-
-        except Exception as e:
-            logger.error(f"Error rendering dashboard content: {e}")
-            st.error(f"Error loading dashboard data: {e}")
+    # Create fragment with conditional auto-refresh
+    if st.session_state.auto_refresh_enabled:
+        @st.fragment(run_every=st.session_state.refresh_interval)  # type: ignore[attr-defined]
+        def content_fragment() -> None:
+            st.session_state.last_refresh = datetime.now()
+            render_dashboard_content()
+    else:
+        def content_fragment() -> None:
+            if not st.session_state.last_refresh:
+                st.session_state.last_refresh = datetime.now()
+            render_dashboard_content()
 
     content_fragment()
+
+
+def render_dashboard_content() -> None:
+    """
+    Render the main dashboard content (metrics, tabs, etc).
+
+    Separated from render_live_content to allow reuse with and without auto-refresh.
+    """
+    try:
+        # Fetch data
+        with st.spinner("Loading data from Redis..."):
+            all_events = get_all_events(limit=st.session_state.max_events)
+            remediation_events = get_events_by_type(
+                "remediation_complete", limit=st.session_state.max_events
+            )
+            false_alarm_count = get_false_alarm_count()
+            active_containers = len(get_active_containers())
+            remediation_stats = get_remediation_stats()
+
+        # Metrics section
+        st.subheader("Key Metrics")
+        render_metrics_cards(remediation_stats, false_alarm_count, active_containers)
+
+        # Tabs for different views
+        tab1, tab2, tab3, tab4 = st.tabs(
+            ["Health Grid", "Active Issues", "History", "Timeline"]
+        )
+
+        with tab1:
+            st.subheader("Container Health Grid")
+            render_health_grid(all_events)
+
+        with tab2:
+            st.subheader("Active Issues")
+            render_active_issues(all_events)
+
+        with tab3:
+            st.subheader("Remediation History")
+            render_remediation_history(remediation_events)
+
+        with tab4:
+            st.subheader("Event Timeline")
+            render_timeline(all_events, max_events=st.session_state.max_events)
+
+    except Exception as e:
+        logger.error(f"Error rendering dashboard content: {e}")
+        st.error(f"Error loading dashboard data: {e}")
 
 
 def render_footer() -> None:
