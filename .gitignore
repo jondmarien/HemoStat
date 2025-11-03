@@ -64,15 +64,9 @@ docker-compose.override.yml
 dump.rdb
 
 # ============================================================================
-# Documentation Build Artifacts (keep source, ignore generated HTML)
+# Documentation Build Artifacts
 # ============================================================================
-docs/*.html              
-docs/*.js                
-docs/_static/            
-docs/_sources/           
-docs/_modules/           
-docs/.buildinfo          
-docs/objects.inv         
-docs/searchindex.js      
+# Note: Generated HTML files in /docs are committed for GitHub Pages serving
+# Only ignore Sphinx cache and source autosummary stubs
 docs/source/_autosummary/ 
 .doctrees/               

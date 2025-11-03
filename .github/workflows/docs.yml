@@ -56,7 +56,10 @@ jobs:
           if git diff --quiet docs/; then
             echo "No changes to documentation"
           else
+            echo "Changes detected in docs/"
             git add docs/
+            git status
             git commit -m "docs: auto-build documentation [skip ci]"
             git push
+            echo "Documentation pushed successfully"
           fi
