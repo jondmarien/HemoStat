@@ -178,7 +178,13 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -200,7 +206,7 @@ services:
       PYTHONUNBUFFERED: 1
       FLASK_APP: test_api.py
     ports:
-      - "5000:5000"
+      - "5001:5000"
     depends_on:
       redis:
         condition: service_healthy
