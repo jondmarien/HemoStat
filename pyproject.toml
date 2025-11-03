@@ -58,7 +58,7 @@ dev = [
     "pytest==7.4.0",          # Unit testing framework
     "pytest-asyncio==0.21.0", # Async test support
     "pytest-cov==4.1.0",      # Code coverage reporting
-    "ruff==0.2.0",            # Fast Python linter and formatter
+    "ruff==0.5.3",            # Fast Python linter and formatter
     "ty==0.0.1a25",           # Fast type checker from Astral (written in Rust)
     "pre-commit==3.6.0",      # Git hooks for code quality
 ]
@@ -76,7 +76,7 @@ all = [
     "pytest==7.4.0",
     "pytest-asyncio==0.21.0",
     "pytest-cov==4.1.0",
-    "ruff==0.2.0",
+    "ruff==0.5.3",
     "ty==0.0.1a25",
     "pre-commit==3.6.0",
 ]
@@ -94,7 +94,7 @@ dev-dependencies = [
     "pytest==7.4.0",
     "pytest-asyncio==0.21.0",
     "pytest-cov==4.1.0",
-    "ruff==0.2.0",
+    "ruff==0.5.3",
     "pre-commit==3.6.0",
     "ty==0.0.1a25",
 ]

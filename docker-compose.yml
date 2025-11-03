@@ -133,17 +133,33 @@ services:
     networks:
       - hemostat-network
 
-  # Placeholder for Dashboard (Phase 3)
-  # dashboard:
-  #   build:
-  #     context: .
-  #     dockerfile: dashboard/Dockerfile
-  #   ports:
-  #     - "8501:8501"
-  #   depends_on:
-  #     - redis
-  #   networks:
-  #     - hemostat-network
+  # Dashboard - Real-time Streamlit monitoring UI (Phase 3)
+  dashboard:
+    container_name: hemostat-dashboard
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DASHBOARD_REFRESH_INTERVAL: ${DASHBOARD_REFRESH_INTERVAL:-5}
+      DASHBOARD_MAX_EVENTS: ${DASHBOARD_MAX_EVENTS:-100}
+      DASHBOARD_AUTO_REFRESH: ${DASHBOARD_AUTO_REFRESH:-true}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - hemostat-network
 
   # Placeholder for Test Services (Phase 4)
   # test:

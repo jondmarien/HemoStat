@@ -124,9 +124,9 @@ All agents inherit from the shared `HemoStatAgent` base class, which provides Re
    # Should return: PONG
    ```
 
-### Running Agents (Phase 2+)
+### Running Agents (Phase 2+) and Dashboard (Phase 3)
 
-Monitor and Analyzer Agents are now available. Run them with:
+All agents and dashboard are now available. Run them with:
 
 ```bash
 # Terminal 1: Start Monitor Agent
@@ -141,18 +141,22 @@ python -m agents.hemostat_responder.main
 # Terminal 4: Start Alert Agent
 python -m agents.hemostat_alert.main
 
-# Terminal 5: Start Dashboard (coming soon)
-# streamlit run dashboard/app.py
+# Terminal 5: Start Dashboard
+streamlit run dashboard/app.py
+# Access at http://localhost:8501
 ```
 
-Alternative: Run all services with Docker Compose
+Alternative: Run all services with Docker Compose (Recommended)
 
 ```bash
-# Start all services including monitor, analyzer, responder, and alert
+# Start all services including monitor, analyzer, responder, alert, and dashboard
 docker-compose up -d
 
-# View alert logs
+# View logs for specific service
+docker-compose logs -f dashboard
 docker-compose logs -f alert
+
+# Access dashboard at http://localhost:8501
 ```
 
 ## Project Structure
@@ -179,7 +183,7 @@ HemoStat-test/
 
 ## Development
 
-### Phase 1: Infrastructure Setup ✅ (Current)
+### Phase 1: Infrastructure Setup ✅ (Complete)
 
 - Redis service with health checks
 - Base agent class with pub/sub primitives
@@ -193,17 +197,21 @@ HemoStat-test/
 - ✅ Responder Agent: Safe remediation execution
 - ✅ Alert Agent: Multi-channel notifications
 
-### Phase 3: Dashboard & Visualization
+### Phase 3: Dashboard & Visualization ✅ (Complete)
 
-- Streamlit-based monitoring UI
-- Real-time event streaming
-- Historical analytics
+- ✅ Streamlit-based monitoring UI
+- ✅ Real-time event streaming with auto-refresh
+- ✅ Container health grid and metrics cards
+- ✅ Active issues feed and remediation history
+- ✅ Event timeline with filtering
+- ✅ Docker Compose integration
 
 ### Phase 4: Testing & Optimization
 
-- Unit and integration tests
-- Performance profiling
-- Production deployment guide
+- ⏳ Unit and integration tests
+- ⏳ Demo scripts and test services
+- ⏳ Performance profiling
+- ⏳ Production deployment guide
 
 ## Documentation
 
@@ -228,4 +236,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*HemoStat is building a multi-agent container health monitoring system. Phase 1 infrastructure complete, Phase 2 all four agents (Monitor/Analyzer/Responder/Alert) implemented.*
+*HemoStat is building a multi-agent container health monitoring system. Phase 1 infrastructure complete, Phase 2 all four agents (Monitor/Analyzer/Responder/Alert) implemented, Phase 3 Streamlit dashboard complete.*
