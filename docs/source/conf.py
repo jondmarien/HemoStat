@@ -10,8 +10,8 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -------------------------------------------------------
 project = 'HemoStat'
-copyright = '2024, Team 1'
-author = 'Team 1'
+copyright = '2025, The HemoStat Team'
+author = 'The HemoStat Team'
 version = '0.1.0'
 release = '0.1.0'
 
