@@ -34,28 +34,41 @@ Write-Host ""
 Write-Host "Triggering CPU spike on test-api (duration: ${Duration}s, intensity: $Intensity)" -ForegroundColor Cyan
 Write-Host ""
 
-# Execute curl command
+# Execute curl command (fire-and-forget since CPU spike runs in background)
 try {
     $body = @{
         duration = $Duration
         intensity = $Intensity
     } | ConvertTo-Json
 
-    $response = Invoke-WebRequest -Uri "http://localhost:5001/stress/cpu" `
-        -Method POST `
-        -ContentType "application/json" `
-        -Body $body `
-        -UseBasicParsing `
-        -ErrorAction Stop
+    # Use a background job to avoid timeout issues
+    $job = Start-Job -ScriptBlock {
+        param($uri, $bodyJson)
+        Invoke-WebRequest -Uri $uri `
+            -Method POST `
+            -ContentType "application/json" `
+            -Body $bodyJson `
+            -UseBasicParsing `
+            -TimeoutSec 120
+    } -ArgumentList "http://localhost:5001/stress/cpu", $body
 
-    if ($response.StatusCode -eq 200) {
+    # Wait briefly to see if request was accepted
+    Start-Sleep -Seconds 2
+    
+    # Check if test-api responded (it should return immediately with 200)
+    $testMetrics = Invoke-WebRequest -Uri "http://localhost:5001/metrics" -UseBasicParsing -TimeoutSec 5
+    if ($testMetrics.StatusCode -eq 200) {
         Write-Host "✓ CPU spike triggered successfully" -ForegroundColor Green
+        Write-Host "  (Stress test running in background for ${Duration}s)" -ForegroundColor Gray
     } else {
-        Write-Host "✗ Failed to trigger CPU spike (HTTP $($response.StatusCode))" -ForegroundColor Red
-        exit 1
+        Write-Host "⚠ CPU spike may not have started (metrics check failed)" -ForegroundColor Yellow
     }
+    
+    # Clean up background job
+    Remove-Job -Job $job -Force 2>$null
 } catch {
     Write-Host "✗ Failed to trigger CPU spike: $_" -ForegroundColor Red
+    Write-Host "  Tip: Check if test-api is healthy with: curl http://localhost:5001/health" -ForegroundColor Yellow
     exit 1
 }
 

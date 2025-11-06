@@ -105,13 +105,28 @@ class HealthAnalyzer(HemoStatAgent):
                     )
                     return None
 
-                self.logger.info(f"Initializing HuggingFaceEndpoint with model: {self.ai_model}")
-                return HuggingFaceEndpoint(
-                    repo_id=self.ai_model,
-                    temperature=0.3,
-                    max_new_tokens=512,
-                    huggingfacehub_api_token=hf_token,
-                )
+                # Check for custom endpoint URL (for models not on serverless Inference API)
+                endpoint_url = os.getenv("HF_ENDPOINT_URL", "").strip()
+                
+                if endpoint_url:
+                    self.logger.info(
+                        f"Initializing HuggingFaceEndpoint with model: {self.ai_model} at custom endpoint: {endpoint_url}"
+                    )
+                    return HuggingFaceEndpoint(
+                        endpoint_url=endpoint_url,
+                        task="text-generation",
+                        temperature=0.3,
+                        max_new_tokens=512,
+                        huggingfacehub_api_token=hf_token,
+                    )
+                else:
+                    self.logger.info(f"Initializing HuggingFaceEndpoint with model: {self.ai_model}")
+                    return HuggingFaceEndpoint(
+                        repo_id=self.ai_model,
+                        temperature=0.3,
+                        max_new_tokens=512,
+                        huggingfacehub_api_token=hf_token,
+                    )
 
             else:
                 self.logger.warning(f"Unknown AI model: {self.ai_model}; using rule-based fallback")
@@ -281,7 +296,8 @@ Be concise and focus on actionable insights."""
                         return None
 
                     response = self.llm.invoke(messages)
-                    response_text = response.content
+                    # HuggingFaceEndpoint returns str directly, Chat models return object with .content
+                    response_text = response.content if hasattr(response, 'content') else str(response)
 
                     # Parse JSON response - strip code fences first
                     json_str = response_text.strip()
@@ -289,11 +305,23 @@ Be concise and focus on actionable insights."""
                     json_str = re.sub(r"^```(?:json)?\s*", "", json_str)
                     json_str = re.sub(r"\s*```$", "", json_str)
 
-                    # Try to extract JSON from response
+                    # Try to extract first complete JSON object from response
                     json_start = json_str.find("{")
-                    json_end = json_str.rfind("}") + 1
-                    if json_start >= 0 and json_end > json_start:
-                        json_str = json_str[json_start:json_end]
+                    if json_start >= 0:
+                        # Find matching closing brace by counting braces
+                        brace_count = 0
+                        json_end = json_start
+                        for i in range(json_start, len(json_str)):
+                            if json_str[i] == '{':
+                                brace_count += 1
+                            elif json_str[i] == '}':
+                                brace_count -= 1
+                                if brace_count == 0:
+                                    json_end = i + 1
+                                    break
+                        
+                        if json_end > json_start:
+                            json_str = json_str[json_start:json_end]
 
                     # Parse JSON
                     analysis_result = json.loads(json_str)
@@ -326,6 +354,23 @@ Be concise and focus on actionable insights."""
                     )
                     if attempt < max_retries - 1:
                         # Sleep between retries for non-JSON formats
+                        time.sleep(0.5 * (2**attempt))
+                    continue
+                except Exception as e:
+                    # Handle TGI server errors and other exceptions
+                    error_msg = str(e)
+                    if "Value out of range" in error_msg or "424" in error_msg:
+                        self.logger.error(
+                            f"TGI server error for {container_name}: {error_msg}. "
+                            "This may indicate the model encountered an internal error. Falling back to rule-based analysis."
+                        )
+                        break  # Don't retry on server errors, fall back immediately
+                    else:
+                        self.logger.error(
+                            f"AI analysis error for {container_name}: {e}",
+                            exc_info=True if attempt == max_retries - 1 else False
+                        )
+                    if attempt < max_retries - 1:
                         time.sleep(0.5 * (2**attempt))
                     continue
 

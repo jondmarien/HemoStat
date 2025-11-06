@@ -1,4 +1,4 @@
-.PHONY: help install dev format lint typecheck quality test clean docker-up docker-down docker-logs docs-install docs-build docs-clean docs-serve docs-check docs windows windows-build windows-up windows-down windows-logs windows-test linux linux-build linux-up linux-down linux-logs linux-test macos macos-build macos-up macos-down macos-logs macos-test
+.PHONY: help install dev format lint typecheck quality test clean docker-up docker-down docker-logs docs-install docs-build docs-clean docs-serve docs-check docs windows windows-build windows-up windows-down windows-logs windows-test windows-test-all linux linux-build linux-up linux-down linux-logs linux-test macos macos-build macos-up macos-down macos-logs macos-test
 
 help:
 	@echo "HemoStat Development Commands"
@@ -32,6 +32,7 @@ help:
 	@echo "  make windows-down     Stop Windows services"
 	@echo "  make windows-logs     View Windows logs"
 	@echo "  make windows-test     Start Windows with test containers"
+	@echo "  make windows-test-all Start Windows with test containers and build"
 	@echo "  make linux            Build and run for Linux"
 	@echo "  make linux-build      Build for Linux"
 	@echo "  make linux-up         Start Linux services"
@@ -139,6 +140,10 @@ windows-test:
 	@echo "  Dashboard: http://localhost:8501"
 	@echo "  Test containers: test-crash-loop, test-cpu-stress, test-memory-stress, etc."
 	@echo "  See TESTING.md for details"
+
+windows-test-all: windows-build windows-test
+	@echo "✓ Build complete, test containers started"
+	@echo "  Dashboard: http://localhost:8501"
 
 # Linux
 linux: linux-build linux-up

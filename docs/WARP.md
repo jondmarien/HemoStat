@@ -2,6 +2,48 @@
 
 This file provides guidance to WARP (warp.dev) when working with code in this repository.
 
+## Tech Stack
+
+### Core Technologies
+- **Language**: Python 3.11+ → *Type-safe async programming for all four agents (Monitor, Analyzer, Responder, Alert)*
+- **Package Manager**: `uv` → *Ultra-fast dependency resolution and virtual environment management (replaces pip/poetry)*
+- **Message Broker**: Redis 7.0.1 → *Pub/sub messaging between agents + shared state storage (cooldowns, agent status)*
+- **Containerization**: Docker & Docker Compose → *Orchestrates Redis + 4 agents + dashboard as microservices*
+
+### Multi-Agent Communication
+- **Redis Client**: `redis==7.0.1` → *Agent base class uses this for `publish_event()` and `subscribe_to_channel()` primitives*
+- **HTTP Client**: `requests==2.32.5` → *Alert agent sends Slack webhook notifications for remediation events*
+
+### AI/LLM Integrations (Analyzer Agent)
+- **LangChain**: 1.0.3 → *LLM orchestration framework for root cause analysis with fallback logic*
+  - `langchain-openai==1.0.1` → *GPT-4 integration for intelligent container issue diagnosis*
+  - `langchain-anthropic==1.0.1` → *Claude integration as alternative AI provider*
+  - `langchain-huggingface>=0.1.0` → *Open-source model support for cost-effective analysis*
+- **OpenAI**: 2.6.1 → *Direct GPT-4 API calls for when LangChain abstraction isn't needed*
+- **Anthropic**: >=0.72.0 → *Direct Claude API calls with confidence scoring for remediation decisions*
+
+### Container & System Management
+- **Docker SDK**: `docker==7.1.0` → *Monitor agent polls container metrics (CPU/memory), Responder agent executes remediation actions (restart/scale)*
+- **Prometheus**: `prometheus-client==0.21.0` → *Exports HemoStat metrics for external monitoring systems (Grafana integration)*
+
+### Web UI (Dashboard)
+- **Streamlit**: 1.51.0 → *Real-time monitoring dashboard with auto-refresh, event streaming from Redis, container health grid*
+
+### Development & Quality
+- **Testing**: `pytest==8.4.2`, `pytest-asyncio==1.2.0`, `pytest-cov==7.0.0` → *Unit tests for agent logic, async Redis communication, coverage reporting*
+- **Linting**: `ruff==0.5.3` → *Fast Python code formatting and linting (replaces Black + Flake8 + isort)*
+- **Type Checking**: `ty==0.0.1a25` → *Astral's Rust-based type checker for catching type errors in agent communication*
+- **Pre-commit Hooks**: `pre-commit==4.0.1` → *Runs quality checks before git commits (format, lint, typecheck)*
+
+### Documentation
+- **Sphinx**: >=7.2.0 → *Auto-generates API documentation from agent docstrings and type hints*
+- **Theme**: `sphinx-rtd-theme>=2.0.0` → *ReadTheDocs styling for professional documentation site*
+- **Extensions**: Autodoc, MyST Parser, Mermaid diagrams, Copy button → *Enhanced docs with architecture diagrams and code examples*
+
+### Utilities
+- **Environment Config**: `python-dotenv==1.2.1` → *Loads .env files for API keys, thresholds, Redis connection settings*
+- **JSON Logging**: `python-json-logger==4.0.0` → *Structured logging for agent events, remediation audit trail, debugging*
+
 ## Project Overview
 
 HemoStat is an **Autonomous Container Health Monitoring System** - a multi-agent system that autonomously monitors, analyzes, and remediates Docker container health issues using AI-powered decision making. The system uses Redis for pub/sub messaging between agents and shared state management.
